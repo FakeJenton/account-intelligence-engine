@@ -2,60 +2,63 @@ import { fmtACV, HEALTH_COLORS, RELIABILITY_COLORS, confBadge, fmtPct } from '..
 
 const s = {
   panel: {
-    background: 'var(--bg)', border: '1px solid var(--border-2)',
-    borderRadius: 12, padding: '14px 16px', marginTop: 6,
+    background: 'var(--bg)',
+    borderRadius: 'var(--radius-lg)',
+    padding: '18px 20px',
+    marginTop: 8,
+    boxShadow: 'var(--shadow-md)',
   },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },
-  title: { fontSize: 15, fontWeight: 500 },
-  meta: { fontSize: 11, color: 'var(--text-2)', marginTop: 2, lineHeight: 1.5 },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 },
+  title: { fontSize: 17, fontWeight: 600, letterSpacing: '-0.015em' },
+  meta: { fontSize: 12, color: 'var(--text-2)', marginTop: 3, lineHeight: 1.55 },
   badge: {
-    display: 'inline-block', fontSize: 10, padding: '2px 8px',
-    borderRadius: 8, fontWeight: 500, color: '#fff', marginRight: 4,
+    display: 'inline-block', fontSize: 10, padding: '3px 10px',
+    borderRadius: 999, fontWeight: 600, color: '#fff', marginRight: 5,
+    letterSpacing: '0.01em',
   },
   sectionLabel: {
-    fontSize: 10, fontWeight: 500, color: 'var(--text-3)',
-    textTransform: 'uppercase', letterSpacing: '0.07em', margin: '10px 0 5px',
+    fontSize: 11, fontWeight: 600, color: 'var(--text-3)',
+    textTransform: 'uppercase', letterSpacing: '0.06em', margin: '14px 0 7px',
   },
   divider: {
-    borderTop: '0.5px solid var(--border)', margin: '14px 0 10px',
+    borderTop: '1px solid var(--border)', margin: '18px 0 12px',
   },
-  scoreBars: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 6, margin: '10px 0' },
+  scoreBars: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, margin: '12px 0' },
   barItem: {},
-  barLbl: { fontSize: 10, color: 'var(--text-2)', marginBottom: 2 },
-  barBg: { height: 4, background: 'var(--bg-2)', borderRadius: 2, overflow: 'hidden' },
-  barFill: { height: 4, borderRadius: 2 },
-  barVal: { fontSize: 10, color: 'var(--text-2)', marginTop: 2 },
+  barLbl: { fontSize: 11, color: 'var(--text-2)', marginBottom: 4 },
+  barBg: { height: 6, background: 'var(--bg-2)', borderRadius: 3, overflow: 'hidden' },
+  barFill: { height: 6, borderRadius: 3 },
+  barVal: { fontSize: 11, color: 'var(--text-2)', marginTop: 4, fontWeight: 500 },
   gapItem: {
-    fontSize: 12, padding: '4px 0 4px 10px',
-    borderLeft: '2px solid var(--border-2)', marginBottom: 4,
-    color: 'var(--text-2)', lineHeight: 1.45,
+    fontSize: 13, padding: '6px 0 6px 12px',
+    borderLeft: '3px solid var(--border-2)', marginBottom: 6,
+    color: 'var(--text-2)', lineHeight: 1.5,
   },
-  intelGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 4 },
-  intelCard: { background: 'var(--bg-2)', borderRadius: 8, padding: '8px 10px' },
-  intelLbl: { fontSize: 10, color: 'var(--text-2)', marginBottom: 3 },
-  intelVal: { fontSize: 12, fontWeight: 500 },
+  intelGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 6 },
+  intelCard: { background: 'var(--bg-2)', borderRadius: 'var(--radius)', padding: '10px 12px' },
+  intelLbl: { fontSize: 10, color: 'var(--text-2)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' },
+  intelVal: { fontSize: 13, fontWeight: 500 },
   confBadge: {
-    display: 'inline-block', fontSize: 10, padding: '1px 6px',
-    borderRadius: 8, marginLeft: 4,
+    display: 'inline-block', fontSize: 10, padding: '2px 8px',
+    borderRadius: 999, marginLeft: 5, fontWeight: 500,
   },
   firstMove: {
-    background: 'var(--bg-2)', borderRadius: 8, padding: '10px 12px',
-    fontSize: 12, lineHeight: 1.65,
+    background: 'var(--bg-2)', borderRadius: 'var(--radius)', padding: '12px 14px',
+    fontSize: 13, lineHeight: 1.65,
   },
   dontBox: {
-    background: 'rgba(217,119,6,0.08)', border: '0.5px solid rgba(217,119,6,0.3)',
-    borderRadius: 8, padding: '7px 10px', fontSize: 11,
-    color: '#92400e', marginTop: 6, lineHeight: 1.5,
+    background: 'rgba(255,149,0,0.08)', border: '1px solid rgba(255,149,0,0.25)',
+    borderRadius: 'var(--radius)', padding: '9px 12px', fontSize: 12,
+    color: '#8a5a00', marginTop: 8, lineHeight: 1.55,
   },
   contradictionBox: {
-    background: 'rgba(124,58,237,0.07)', border: '0.5px solid rgba(124,58,237,0.3)',
-    borderRadius: 8, padding: '7px 10px', fontSize: 11,
-    color: '#5b21b6', marginTop: 4, lineHeight: 1.5,
+    background: 'rgba(175,82,222,0.07)', border: '1px solid rgba(175,82,222,0.22)',
+    borderRadius: 'var(--radius)', padding: '9px 12px', fontSize: 12,
+    color: '#6b21a8', marginTop: 6, lineHeight: 1.55,
   },
-  fundingPill: {
-    display: 'inline-block', fontSize: 10, padding: '1px 7px',
-    borderRadius: 8, background: '#fef9c3', color: '#854d0e',
-    border: '0.5px solid #fcd34d', marginLeft: 6,
+  pill: {
+    display: 'inline-block', fontSize: 11, padding: '2px 8px',
+    borderRadius: 999, marginLeft: 7, fontWeight: 500,
   },
 }
 
@@ -80,7 +83,7 @@ function formatFirstMove(text) {
   if (!text) return null
   return text.split('\n').map((line, i) => {
     const bold = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    return <div key={i} style={{ marginBottom: line.trim() ? 4 : 2 }} dangerouslySetInnerHTML={{ __html: bold }} />
+    return <div key={i} style={{ marginBottom: line.trim() ? 5 : 2 }} dangerouslySetInnerHTML={{ __html: bold }} />
   })
 }
 
@@ -100,24 +103,24 @@ export default function AccountDetail({ account }) {
           <div style={s.title}>{account.company_name}</div>
           <div style={s.meta}>
             {account.rep_name} · {account.segment} · {account.current_stage} · {account.forecast_category}
-            {hasFunding && <span style={s.fundingPill}>💰 Funding</span>}
-            {hasLeadershipChange && <span style={{ ...s.fundingPill, background: '#e0e7ff', color: '#3730a3', borderColor: '#c7d2fe' }}>👤 Leadership change</span>}
+            {hasFunding && <span style={{ ...s.pill, background: '#fff4d6', color: '#8a5a00' }}>Funding</span>}
+            {hasLeadershipChange && <span style={{ ...s.pill, background: '#e4e4ff', color: '#3730a3' }}>Leadership change</span>}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 18, fontWeight: 500 }}>{fmtACV(account.acv_usd)}</div>
-          <div style={{ marginTop: 4 }}>
+          <div style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.02em' }}>{fmtACV(account.acv_usd)}</div>
+          <div style={{ marginTop: 6 }}>
             <span style={{ ...s.badge, background: hc }}>{health.label}</span>
             <span style={{ ...s.badge, background: rc }}>{health.reliability_tag}</span>
           </div>
         </div>
       </div>
 
-      {/* Pre-call angle — actionable content first */}
+      {/* Pre-call angle */}
       <div style={s.sectionLabel}>
         Pre-call angle <ConfBadge conf={action.angle_confidence} />
       </div>
-      <div style={{ ...s.gapItem, borderLeftColor: '#d97706', color: 'var(--text)', fontWeight: 400 }}>
+      <div style={{ ...s.gapItem, borderLeftColor: 'var(--amber)', color: 'var(--text)', fontSize: 14 }}>
         <strong>{action.top_angle}</strong>
       </div>
       {action.what_not_to_do && (
@@ -132,44 +135,43 @@ export default function AccountDetail({ account }) {
         {formatFirstMove(action.first_move || action.first_move_preview)}
       </div>
 
-      {/* Divider before diagnostic detail */}
       <div style={s.divider} />
 
       {/* Score overview */}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 8 }}>
-        <span style={{ fontSize: 22, fontWeight: 500 }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 18, marginBottom: 8 }}>
+        <span style={{ fontSize: 26, fontWeight: 600, letterSpacing: '-0.025em' }}>
           {health.overall_score}
-          <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
+          <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
         </span>
-        <span style={{ fontSize: 14, color: 'var(--text-2)' }}>health</span>
-        <span style={{ fontSize: 16, fontWeight: 500, marginLeft: 8 }}>
+        <span style={{ fontSize: 13, color: 'var(--text-2)' }}>health</span>
+        <span style={{ fontSize: 18, fontWeight: 600, marginLeft: 10, letterSpacing: '-0.02em' }}>
           {intelligence.readiness_score}
           <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
         </span>
-        <span style={{ fontSize: 12, color: 'var(--text-2)' }}>intel ready</span>
+        <span style={{ fontSize: 13, color: 'var(--text-2)' }}>intel ready</span>
       </div>
 
       {/* Dimension bars */}
       <div style={s.scoreBars}>
-        <DimBar label="Completeness" value={health.completeness} color="#2563eb" />
-        <DimBar label="Freshness" value={health.freshness} color="#16a34a" />
-        <DimBar label="Consistency" value={health.consistency} color="#d97706" />
+        <DimBar label="Completeness" value={health.completeness} color="var(--blue)" />
+        <DimBar label="Freshness" value={health.freshness} color="var(--green)" />
+        <DimBar label="Consistency" value={health.consistency} color="var(--amber)" />
         <DimBar label="Reliability" value={health.reliability} color={rc} />
       </div>
 
-      {/* Critical gaps + contradictions */}
+      {/* Critical gaps */}
       {gaps.critical > 0 && (
         <>
           <div style={s.sectionLabel}>{gaps.critical} critical gaps · {gaps.contradictions} contradictions</div>
           {gaps.top_critical_gaps?.map((g, i) => (
-            <div key={i} style={{ ...s.gapItem, borderLeftColor: '#dc2626' }}>
+            <div key={i} style={{ ...s.gapItem, borderLeftColor: 'var(--red)' }}>
               <strong>{g.label}</strong>
-              {g.context && <span style={{ color: 'var(--text-3)', fontSize: 11 }}> — {g.context.slice(0, 80)}</span>}
+              {g.context && <span style={{ color: 'var(--text-3)', fontSize: 12 }}> — {g.context.slice(0, 80)}</span>}
             </div>
           ))}
           {gaps.top_contradictions?.map((c, i) => (
             <div key={i} style={s.contradictionBox}>
-              <strong>⚑ {c.label}</strong><br />
+              <strong>{c.label}</strong><br />
               <span>{c.detail}</span>
             </div>
           ))}
@@ -184,21 +186,21 @@ export default function AccountDetail({ account }) {
           <div style={s.intelLbl}>Champion <ConfBadge conf={intelligence.champion.confidence} /></div>
           <div style={s.intelVal}>{intelligence.champion.has_crm_data ? 'Logged' : 'Not logged'}</div>
           {intelligence.champion.candidates?.slice(0, 1).map((c, i) => (
-            <div key={i} style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 3 }}>
+            <div key={i} style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 4 }}>
               {c.inferred_name} — {c.title}
-              <div style={{ fontSize: 10, color: 'var(--text-3)' }}>{c.signal_source}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 1 }}>{c.signal_source}</div>
             </div>
           ))}
         </div>
 
         <div style={s.intelCard}>
           <div style={s.intelLbl}>Exec engagement</div>
-          <div style={{ ...s.intelVal, color: intelligence.economic_buyer.exec_engaged ? '#16a34a' : '#dc2626' }}>
+          <div style={{ ...s.intelVal, color: intelligence.economic_buyer.exec_engaged ? 'var(--green)' : 'var(--red)' }}>
             {intelligence.economic_buyer.exec_engaged ? '✓ Engaged' : '✗ Not engaged'}
-            <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-2)' }}> · {intelligence.economic_buyer.meetings} meetings</span>
+            <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-2)' }}> · {intelligence.economic_buyer.meetings} meetings</span>
           </div>
           {intelligence.economic_buyer.inferred_execs?.slice(0, 1).map((e, i) => (
-            <div key={i} style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 3 }}>
+            <div key={i} style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 4 }}>
               {e.inferred_name} — {e.title}
             </div>
           ))}
@@ -209,11 +211,11 @@ export default function AccountDetail({ account }) {
           <div style={s.intelVal}>
             {intelligence.competitive.has_crm_data ? 'Logged' : 'Not logged'}
             {intelligence.competitive.pricing_pressure && (
-              <span style={{ color: '#d97706', fontSize: 11, fontWeight: 400 }}> · ⚠️ pricing pressure</span>
+              <span style={{ color: 'var(--amber)', fontSize: 12, fontWeight: 400 }}> · pricing pressure</span>
             )}
           </div>
           {intelligence.competitive.signals?.slice(0, 1).map((sig, i) => (
-            <div key={i} style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 3 }}>
+            <div key={i} style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 4 }}>
               {sig.competitor} <ConfBadge conf={sig.confidence} />
             </div>
           ))}
@@ -221,11 +223,11 @@ export default function AccountDetail({ account }) {
 
         <div style={s.intelCard}>
           <div style={s.intelLbl}>Use case</div>
-          <div style={{ fontSize: 11, lineHeight: 1.4, color: intelligence.use_case.has_crm_data ? 'var(--text)' : 'var(--text-2)' }}>
+          <div style={{ fontSize: 12, lineHeight: 1.5, color: intelligence.use_case.has_crm_data ? 'var(--text)' : 'var(--text-2)' }}>
             {intelligence.use_case.inferred || '—'}
           </div>
           {(intelligence.use_case.tech_stack || []).length > 0 && (
-            <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 3 }}>
+            <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>
               {intelligence.use_case.tech_stack.slice(0, 3).join(' + ')}
             </div>
           )}
@@ -238,11 +240,11 @@ export default function AccountDetail({ account }) {
         <>
           <div style={s.sectionLabel}>Timing signals</div>
           {intelligence.timing.urgency_signals.map((sig, i) => (
-            <div key={i} style={{ ...s.gapItem, borderLeftColor: '#d97706' }}>{sig}</div>
+            <div key={i} style={{ ...s.gapItem, borderLeftColor: 'var(--amber)' }}>{sig}</div>
           ))}
           {intelligence.timing.recent_news?.slice(0, 1).map((n, i) => (
-            <div key={i} style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 3 }}>
-              📰 {n.headline} — <em>{n.source}</em>
+            <div key={i} style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 5 }}>
+              {n.headline} — <em>{n.source}</em>
             </div>
           ))}
         </>

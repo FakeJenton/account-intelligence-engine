@@ -1,14 +1,14 @@
 export const HEALTH_COLORS = {
-  critical: '#dc2626',
-  'at-risk': '#d97706',
-  'needs-attention': '#2563eb',
-  healthy: '#16a34a',
+  critical: '#ff3b30',
+  'at-risk': '#ff9500',
+  'needs-attention': '#007aff',
+  healthy: '#34c759',
 }
 
 export const RELIABILITY_COLORS = {
-  reliable: '#16a34a',
-  questionable: '#d97706',
-  unreliable: '#dc2626',
+  reliable: '#34c759',
+  questionable: '#ff9500',
+  unreliable: '#ff3b30',
 }
 
 export const CONFIDENCE_LABELS = {
@@ -19,10 +19,10 @@ export const CONFIDENCE_LABELS = {
 }
 
 export const CONFIDENCE_COLORS = {
-  'crm-confirmed': { bg: '#dcfce7', text: '#166534' },
-  'inferred-strong': { bg: '#dbeafe', text: '#1e40af' },
-  'inferred-weak': { bg: '#fef9c3', text: '#854d0e' },
-  unverified: { bg: 'var(--bg-2)', text: 'var(--text-3)' },
+  'crm-confirmed':   { bg: '#e6f7ec', text: '#1f7a3c' },
+  'inferred-strong': { bg: '#e4f0ff', text: '#0050d0' },
+  'inferred-weak':   { bg: '#fff4d6', text: '#8a5a00' },
+  unverified:        { bg: 'var(--bg-2)', text: 'var(--text-3)' },
 }
 
 export const HEALTH_LABELS = {
@@ -33,9 +33,9 @@ export const HEALTH_LABELS = {
 }
 
 export const SEGMENT_COLORS = {
-  Enterprise: '#6366f1',
-  'Mid-Market': '#0ea5e9',
-  SMB: '#10b981',
+  Enterprise: '#5856d6',
+  'Mid-Market': '#007aff',
+  SMB: '#34c759',
 }
 
 export function fmtACV(v) {

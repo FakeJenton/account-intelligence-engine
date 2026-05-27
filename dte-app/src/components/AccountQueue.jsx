@@ -1,78 +1,90 @@
 import { useState, useMemo, useEffect } from 'react'
 import AccountDetail from './AccountDetail'
-import { fmtACV, HEALTH_COLORS, HEALTH_LABELS, SEGMENT_COLORS } from '../utils'
+import { fmtACV, HEALTH_COLORS, SEGMENT_COLORS } from '../utils'
 
 const s = {
-  statsStrip: { display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8, marginBottom: 14 },
-  stat: { background: 'var(--bg-2)', borderRadius: 8, padding: '10px 12px' },
-  statLbl: { fontSize: 11, color: 'var(--text-2)', marginBottom: 3 },
-  statVal: { fontSize: 18, fontWeight: 500 },
-  searchWrap: { position: 'relative', flex: 1, minWidth: 160 },
+  statsStrip: { display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 10, marginBottom: 18 },
+  stat: {
+    background: 'var(--bg)', borderRadius: 'var(--radius-lg)', padding: '14px 16px',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  statLbl: { fontSize: 11, color: 'var(--text-2)', marginBottom: 6, letterSpacing: '-0.005em' },
+  statVal: { fontSize: 20, fontWeight: 600, letterSpacing: '-0.02em' },
+
+  searchWrap: { position: 'relative', flex: 1, minWidth: 200 },
   searchInput: {
-    width: '100%', padding: '5px 28px 5px 10px', fontSize: 12,
-    border: '0.5px solid var(--border-2)', borderRadius: 8,
-    background: 'var(--bg-2)', color: 'var(--text)', outline: 'none',
-    boxSizing: 'border-box',
+    width: '100%', padding: '8px 30px 8px 12px', fontSize: 13,
+    border: '1px solid var(--border)', borderRadius: 'var(--radius)',
+    background: 'var(--bg)', color: 'var(--text)', outline: 'none',
+    boxSizing: 'border-box', boxShadow: 'var(--shadow-sm)',
   },
   clearBtn: {
-    position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
-    background: 'none', border: 'none', color: 'var(--text-2)', fontSize: 14, padding: 0, cursor: 'pointer',
+    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
+    background: 'none', border: 'none', color: 'var(--text-3)',
+    fontSize: 16, padding: 0, cursor: 'pointer', lineHeight: 1,
   },
+
   filterBtn: {
-    fontSize: 11, padding: '4px 10px', borderRadius: 20,
-    border: '0.5px solid var(--border-2)', background: 'var(--bg-2)',
-    color: 'var(--text-2)', cursor: 'pointer',
+    fontSize: 12, padding: '6px 12px', borderRadius: 999,
+    border: '1px solid var(--border)', background: 'var(--bg)',
+    color: 'var(--text-2)', cursor: 'pointer', boxShadow: 'var(--shadow-sm)',
+    letterSpacing: '-0.005em',
   },
+
   select: {
-    fontSize: 11, padding: '4px 8px', borderRadius: 8,
-    border: '0.5px solid var(--border-2)', background: 'var(--bg-2)',
+    fontSize: 12, padding: '6px 28px 6px 12px', borderRadius: 'var(--radius)',
+    border: '1px solid var(--border)', background: 'var(--bg)',
     color: 'var(--text)', cursor: 'pointer', outline: 'none',
+    boxShadow: 'var(--shadow-sm)',
   },
+
   activeTag: {
-    display: 'inline-flex', alignItems: 'center', gap: 4,
-    fontSize: 11, padding: '3px 8px', borderRadius: 20,
-    background: 'var(--bg-3)', border: '0.5px solid var(--border-2)',
+    display: 'inline-flex', alignItems: 'center', gap: 6,
+    fontSize: 11, padding: '4px 4px 4px 10px', borderRadius: 999,
+    background: 'var(--bg)', border: '1px solid var(--border-2)',
     color: 'var(--text-2)',
   },
   tagX: {
-    background: 'none', border: 'none', cursor: 'pointer',
-    color: 'var(--text-3)', fontSize: 13, padding: 0, lineHeight: 1,
+    background: 'var(--bg-2)', border: 'none', cursor: 'pointer',
+    color: 'var(--text-2)', fontSize: 12, padding: 0,
+    width: 18, height: 18, borderRadius: 999, lineHeight: 1,
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
   },
-  queue: { display: 'flex', flexDirection: 'column', gap: 5 },
+
+  queue: { display: 'flex', flexDirection: 'column', gap: 6 },
   row: {
-    background: 'var(--bg)', border: '0.5px solid var(--border)',
-    borderRadius: 8, padding: '9px 12px', cursor: 'pointer',
+    background: 'var(--bg)',
+    borderRadius: 'var(--radius)', padding: '12px 14px 12px 13px',
+    cursor: 'pointer',
     display: 'grid', gridTemplateColumns: '1fr auto auto auto',
-    gap: 8, alignItems: 'center',
-    transition: 'border-color 0.1s',
+    gap: 14, alignItems: 'center',
+    boxShadow: 'var(--shadow-sm)',
+    transition: 'box-shadow 0.15s, transform 0.15s',
   },
-  company: { fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
-  rep: { fontSize: 11, color: 'var(--text-2)', marginTop: 1 },
+  company: { fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: '-0.01em' },
+  rep: { fontSize: 11, color: 'var(--text-2)', marginTop: 2 },
   segPill: {
-    fontSize: 10, padding: '2px 7px', borderRadius: 10,
-    border: '0.5px solid var(--border)', color: 'var(--text-2)', whiteSpace: 'nowrap',
+    fontSize: 10, padding: '3px 8px', borderRadius: 999,
+    border: '1px solid var(--border)', color: 'var(--text-2)', whiteSpace: 'nowrap',
+    fontWeight: 500, letterSpacing: '0.01em',
   },
-  acv: { fontSize: 12, fontWeight: 500, textAlign: 'right', whiteSpace: 'nowrap' },
-  stage: { fontSize: 10, color: 'var(--text-2)', textAlign: 'right', whiteSpace: 'nowrap' },
-  showMore: {
-    fontSize: 11, textAlign: 'center', padding: 8, cursor: 'pointer',
-    border: '0.5px solid var(--border)', borderRadius: 8,
-    background: 'var(--bg-2)', color: 'var(--text-2)', marginTop: 6, width: '100%',
-  },
+  acv: { fontSize: 13, fontWeight: 600, textAlign: 'right', whiteSpace: 'nowrap', letterSpacing: '-0.01em' },
+  stage: { fontSize: 11, color: 'var(--text-2)', textAlign: 'right', whiteSpace: 'nowrap', marginTop: 2 },
 }
 
 const FILTERS = [
-  { key: 'all',             label: 'All',             activeColor: '#1a1917' },
-  { key: 'critical',        label: 'Critical',        activeColor: '#dc2626' },
-  { key: 'at-risk',         label: 'At Risk',         activeColor: '#d97706' },
-  { key: 'needs-attention', label: 'Needs Attention', activeColor: '#2563eb' },
-  { key: 'healthy',         label: 'Healthy',         activeColor: '#16a34a' },
+  { key: 'all',             label: 'All',             activeColor: '#1d1d1f' },
+  { key: 'critical',        label: 'Critical',        activeColor: 'var(--red)' },
+  { key: 'at-risk',         label: 'At Risk',         activeColor: 'var(--amber)' },
+  { key: 'needs-attention', label: 'Needs Attention', activeColor: 'var(--blue)' },
+  { key: 'healthy',         label: 'Healthy',         activeColor: 'var(--green)' },
 ]
 
 const SORT_OPTIONS = [
   { key: 'priority',      label: 'Priority score' },
   { key: 'acv-desc',      label: 'ACV (high to low)' },
   { key: 'health-asc',    label: 'Health (worst first)' },
+  { key: 'health-desc',   label: 'Health (best first)' },
   { key: 'freshness-asc', label: 'Staleness (least active first)' },
 ]
 
@@ -81,6 +93,7 @@ const REL_LABELS = { reliable: 'Reliable', questionable: 'Questionable', unrelia
 function sortAccounts(accounts, sortBy) {
   if (sortBy === 'acv-desc')      return [...accounts].sort((a, b) => (b.acv_usd || 0) - (a.acv_usd || 0))
   if (sortBy === 'health-asc')    return [...accounts].sort((a, b) => a.health.overall_score - b.health.overall_score)
+  if (sortBy === 'health-desc')   return [...accounts].sort((a, b) => b.health.overall_score - a.health.overall_score)
   if (sortBy === 'freshness-asc') return [...accounts].sort((a, b) => a.health.freshness - b.health.freshness)
   return [...accounts].sort((a, b) => (b.priority_score || 0) - (a.priority_score || 0))
 }
@@ -95,17 +108,15 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
   const [urgencyFilter, setUrgencyFilter] = useState(false)
   const [sortBy, setSortBy]               = useState('priority')
   const [search, setSearch]               = useState('')
-  const [shown, setShown]                 = useState(25)
   const [selectedId, setSelectedId]       = useState(null)
 
   const es       = data.executive_summary
   const accounts = data.accounts || []
 
-  const reps    = useMemo(() => [...new Set(accounts.map(a => a.rep_name))].sort(), [accounts])
-  const stages  = useMemo(() => [...new Set(accounts.map(a => a.current_stage))].sort(), [accounts])
+  const reps     = useMemo(() => [...new Set(accounts.map(a => a.rep_name))].sort(), [accounts])
+  const stages   = useMemo(() => [...new Set(accounts.map(a => a.current_stage))].sort(), [accounts])
   const segments = useMemo(() => [...new Set(accounts.map(a => a.segment))].sort(), [accounts])
 
-  // Consume filters pushed from Exec Summary
   useEffect(() => {
     if (navFilters === null) return
     setFilter(navFilters.health || 'all')
@@ -117,7 +128,6 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
     setUrgencyFilter(!!navFilters.urgency)
     setSortBy(navFilters.sortBy || 'priority')
     setSearch('')
-    setShown(25)
     setSelectedId(null)
     onNavConsumed?.()
   }, [navFilters])  // eslint-disable-line react-hooks/exhaustive-deps
@@ -156,24 +166,21 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
     return { totalACV, atRisk, avgHealth, unreliable }
   }, [filtered])
 
-  const visible = filtered.slice(0, shown)
-
   function toggleRow(id) {
     setSelectedId(prev => prev === id ? null : id)
   }
 
   function handleFilter(f) {
-    setFilter(f); setShown(25); setSelectedId(null)
+    setFilter(f); setSelectedId(null)
   }
 
   function clearFilters() {
     setFilter('all')
     setRepFilter(''); setStageFilter(''); setSegmentFilter('')
     setReliabilityFilter(''); setFundingFilter(false); setUrgencyFilter(false)
-    setSearch(''); setShown(25); setSelectedId(null)
+    setSearch(''); setSelectedId(null)
   }
 
-  // Active tags for nav-set filters that don't have a permanent dropdown
   const navTags = [
     reliabilityFilter && { label: `Reliability: ${REL_LABELS[reliabilityFilter] || reliabilityFilter}`, clear: () => setReliabilityFilter('') },
     fundingFilter     && { label: 'Funding detected', clear: () => setFundingFilter(false) },
@@ -183,7 +190,7 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
   return (
     <div>
 
-      {/* Stats strip — reflects filtered context when active */}
+      {/* Stats strip */}
       <div style={s.statsStrip}>
         {isFiltered ? (
           <>
@@ -191,48 +198,48 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
               <div style={s.statLbl}>Showing</div>
               <div style={s.statVal}>
                 {filtered.length}
-                <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-2)' }}> / {accounts.length}</span>
+                <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-2)' }}> / {accounts.length}</span>
               </div>
             </div>
             <div style={s.stat}>
               <div style={s.statLbl}>ACV in view</div>
-              <div style={{ ...s.statVal, color: '#2563eb' }}>{fmtACV(filteredStats.totalACV)}</div>
+              <div style={{ ...s.statVal, color: 'var(--blue)' }}>{fmtACV(filteredStats.totalACV)}</div>
             </div>
             <div style={s.stat}>
               <div style={s.statLbl}>Critical / at-risk</div>
-              <div style={{ ...s.statVal, color: '#d97706' }}>{filteredStats.atRisk}</div>
+              <div style={{ ...s.statVal, color: 'var(--amber)' }}>{filteredStats.atRisk}</div>
             </div>
             <div style={s.stat}>
               <div style={s.statLbl}>Unreliable forecasts</div>
-              <div style={{ ...s.statVal, color: '#dc2626' }}>{filteredStats.unreliable}</div>
+              <div style={{ ...s.statVal, color: 'var(--red)' }}>{filteredStats.unreliable}</div>
             </div>
             <div style={s.stat}>
               <div style={s.statLbl}>Avg health</div>
-              <div style={{ ...s.statVal, color: '#2563eb' }}>{filteredStats.avgHealth}/100</div>
+              <div style={{ ...s.statVal, color: 'var(--blue)' }}>{filteredStats.avgHealth}/100</div>
             </div>
           </>
         ) : (
           <>
             <div style={s.stat}><div style={s.statLbl}>Total ACV</div><div style={s.statVal}>{fmtACV(es.total_acv)}</div></div>
-            <div style={s.stat}><div style={s.statLbl}>ACV at risk</div><div style={{ ...s.statVal, color: '#dc2626' }}>{fmtACV(es.acv_at_risk)}</div></div>
-            <div style={s.stat}><div style={s.statLbl}>Critical / at-risk</div><div style={{ ...s.statVal, color: '#d97706' }}>{(es.health_distribution?.critical || 0) + (es.health_distribution?.['at-risk'] || 0)}</div></div>
-            <div style={s.stat}><div style={s.statLbl}>Unreliable commits</div><div style={{ ...s.statVal, color: '#dc2626' }}>{es.unreliable_commit_count}</div></div>
-            <div style={s.stat}><div style={s.statLbl}>Avg intel readiness</div><div style={{ ...s.statVal, color: '#2563eb' }}>{es.avg_intelligence_readiness}/100</div></div>
+            <div style={s.stat}><div style={s.statLbl}>ACV at risk</div><div style={{ ...s.statVal, color: 'var(--red)' }}>{fmtACV(es.acv_at_risk)}</div></div>
+            <div style={s.stat}><div style={s.statLbl}>Critical / at-risk</div><div style={{ ...s.statVal, color: 'var(--amber)' }}>{(es.health_distribution?.critical || 0) + (es.health_distribution?.['at-risk'] || 0)}</div></div>
+            <div style={s.stat}><div style={s.statLbl}>Unreliable commits</div><div style={{ ...s.statVal, color: 'var(--red)' }}>{es.unreliable_commit_count}</div></div>
+            <div style={s.stat}><div style={s.statLbl}>Avg intel readiness</div><div style={{ ...s.statVal, color: 'var(--blue)' }}>{es.avg_intelligence_readiness}/100</div></div>
           </>
         )}
       </div>
 
       {/* Row 1: search + sort */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 6, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
         <div style={s.searchWrap}>
           <input
             style={s.searchInput}
-            placeholder="Search by company, rep, or account ID..."
+            placeholder="Search by company, rep, or account ID"
             value={search}
-            onChange={e => { setSearch(e.target.value); setShown(25); setSelectedId(null) }}
+            onChange={e => { setSearch(e.target.value); setSelectedId(null) }}
           />
           {search && (
-            <button style={s.clearBtn} onClick={() => { setSearch(''); setShown(25) }}>×</button>
+            <button style={s.clearBtn} onClick={() => setSearch('')}>×</button>
           )}
         </div>
         <select style={s.select} value={sortBy} onChange={e => setSortBy(e.target.value)}>
@@ -241,63 +248,66 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
       </div>
 
       {/* Row 2: health pills + dropdowns */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: navTags.length ? 6 : 10, flexWrap: 'wrap', alignItems: 'center' }}>
-        {FILTERS.map(f => (
-          <button
-            key={f.key}
-            style={{
-              ...s.filterBtn,
-              ...(filter === f.key ? { background: f.activeColor, color: '#fff', borderColor: f.activeColor } : {}),
-            }}
-            onClick={() => handleFilter(f.key)}
-          >
-            {f.label}
-          </button>
-        ))}
-        <select style={s.select} value={repFilter} onChange={e => { setRepFilter(e.target.value); setShown(25); setSelectedId(null) }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: navTags.length ? 8 : 14, flexWrap: 'wrap', alignItems: 'center' }}>
+        {FILTERS.map(f => {
+          const active = filter === f.key
+          return (
+            <button
+              key={f.key}
+              style={{
+                ...s.filterBtn,
+                ...(active ? { background: f.activeColor, color: '#fff', borderColor: f.activeColor } : {}),
+              }}
+              onClick={() => handleFilter(f.key)}
+            >
+              {f.label}
+            </button>
+          )
+        })}
+        <select style={s.select} value={repFilter} onChange={e => { setRepFilter(e.target.value); setSelectedId(null) }}>
           <option value="">All reps</option>
           {reps.map(r => <option key={r} value={r}>{r}</option>)}
         </select>
-        <select style={s.select} value={stageFilter} onChange={e => { setStageFilter(e.target.value); setShown(25); setSelectedId(null) }}>
+        <select style={s.select} value={stageFilter} onChange={e => { setStageFilter(e.target.value); setSelectedId(null) }}>
           <option value="">All stages</option>
           {stages.map(st => <option key={st} value={st}>{st}</option>)}
         </select>
-        <select style={s.select} value={segmentFilter} onChange={e => { setSegmentFilter(e.target.value); setShown(25); setSelectedId(null) }}>
+        <select style={s.select} value={segmentFilter} onChange={e => { setSegmentFilter(e.target.value); setSelectedId(null) }}>
           <option value="">All segments</option>
           {segments.map(sg => <option key={sg} value={sg}>{sg}</option>)}
         </select>
       </div>
 
-      {/* Row 3: active nav tags + clear */}
+      {/* Row 3: nav tags + clear */}
       {(navTags.length > 0 || isFiltered) && (
-        <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
           {navTags.map((tag, i) => (
             <span key={i} style={s.activeTag}>
               {tag.label}
-              <button style={s.tagX} onClick={tag.clear}>×</button>
+              <button style={s.tagX} onClick={tag.clear} aria-label="Remove filter">×</button>
             </span>
           ))}
           {isFiltered && (
-            <button style={{ ...s.filterBtn, color: 'var(--text-3)', fontSize: 10 }} onClick={clearFilters}>
-              Clear all ×
+            <button style={{ ...s.filterBtn, color: 'var(--text-3)', fontSize: 11 }} onClick={clearFilters}>
+              Clear all
             </button>
           )}
         </div>
       )}
 
-      <div style={{ fontSize: 11, color: 'var(--text-2)', marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: 'var(--text-2)', marginBottom: 10 }}>
         {filtered.length} account{filtered.length !== 1 ? 's' : ''}
-        {isFiltered ? ' match filters' : ' · sorted by priority'}
+        {isFiltered ? ' match filters' : ''}
       </div>
 
-      {/* Queue rows */}
+      {/* Queue rows — show all filtered, no pagination */}
       <div style={s.queue}>
-        {visible.length === 0 && (
-          <div style={{ textAlign: 'center', padding: 24, color: 'var(--text-2)' }}>
-            No accounts match this filter.
+        {filtered.length === 0 && (
+          <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+            No accounts match the active filters.
           </div>
         )}
-        {visible.map(a => {
+        {filtered.map(a => {
           const isSel      = selectedId === a.account_id
           const hc         = HEALTH_COLORS[a.health.label] || '#888'
           const hasFunding = a.intelligence?.timing?.funding_detected
@@ -310,25 +320,25 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
                 style={{
                   ...s.row,
                   borderLeft: `3px solid ${hc}`,
-                  ...(isSel ? { borderTopColor: 'var(--border-2)', borderRightColor: 'var(--border-2)', borderBottomColor: 'var(--border-2)' } : {}),
+                  ...(isSel ? { boxShadow: 'var(--shadow-md)' } : {}),
                 }}
                 onClick={() => toggleRow(a.account_id)}
               >
-                <div>
+                <div style={{ minWidth: 0 }}>
                   <div style={s.company}>
                     {a.company_name}
                     {hasFunding && (
-                      <span title="Funding event detected" style={{ fontSize: 9, marginLeft: 5, color: '#854d0e', background: '#fef9c3', padding: '1px 5px', borderRadius: 6, cursor: 'help' }}>
-                        💰
+                      <span title="Funding event detected" style={{ fontSize: 10, marginLeft: 7, color: '#a16500', background: '#fff8e1', padding: '2px 7px', borderRadius: 6, cursor: 'help', fontWeight: 500 }}>
+                        Funding
                       </span>
                     )}
                     {hasCont && (
-                      <span title="Data contradictions detected — forecast reliability affected" style={{ fontSize: 9, marginLeft: 4, color: '#5b21b6', cursor: 'help' }}>
-                        ⚑
+                      <span title="Data contradictions detected — forecast reliability affected" style={{ fontSize: 10, marginLeft: 6, color: '#6b21a8', background: '#f3e8ff', padding: '2px 7px', borderRadius: 6, cursor: 'help', fontWeight: 500 }}>
+                        Contradiction
                       </span>
                     )}
                     {isStale && (
-                      <span title="Low activity cadence for this deal stage" style={{ fontSize: 9, marginLeft: 5, color: '#92400e', background: 'rgba(217,119,6,0.12)', padding: '1px 5px', borderRadius: 6, cursor: 'help' }}>
+                      <span title="Low activity cadence for this deal stage" style={{ fontSize: 10, marginLeft: 6, color: '#a16500', background: '#fff8e1', padding: '2px 7px', borderRadius: 6, cursor: 'help', fontWeight: 500 }}>
                         Stale
                       </span>
                     )}
@@ -336,7 +346,7 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
                   <div style={s.rep}>{a.rep_name}</div>
                 </div>
 
-                <div style={{ ...s.segPill, borderColor: SEGMENT_COLORS[a.segment] || 'var(--border)', color: SEGMENT_COLORS[a.segment] || 'var(--text-2)' }}>
+                <div style={{ ...s.segPill, borderColor: SEGMENT_COLORS[a.segment] || 'var(--border-2)', color: SEGMENT_COLORS[a.segment] || 'var(--text-2)' }}>
                   {a.segment}
                 </div>
 
@@ -345,9 +355,9 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
                   <div style={s.stage}>{a.current_stage}</div>
                 </div>
 
-                <div style={{ fontSize: 12, fontWeight: 600, minWidth: 44, textAlign: 'right', color: hc }}>
+                <div style={{ fontSize: 14, fontWeight: 600, minWidth: 52, textAlign: 'right', color: hc, letterSpacing: '-0.02em' }}>
                   {a.health.overall_score}
-                  <span style={{ fontSize: 10, fontWeight: 400, color: 'var(--text-3)' }}>/100</span>
+                  <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-3)' }}>/100</span>
                 </div>
               </div>
 
@@ -356,12 +366,6 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
           )
         })}
       </div>
-
-      {filtered.length > shown && (
-        <button style={s.showMore} onClick={() => setShown(n => Math.min(n + 25, filtered.length))}>
-          Show more ({filtered.length - shown} remaining)
-        </button>
-      )}
 
     </div>
   )
