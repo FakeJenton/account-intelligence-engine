@@ -38,11 +38,18 @@ const s = {
   repTd: { padding: '5px 8px', borderBottom: '0.5px solid var(--border)' },
 }
 
-function StatCard({ label, value, color }) {
+const REL_COLOR = { reliable: '#16a34a', questionable: '#d97706', unreliable: '#dc2626' }
+
+function StatCard({ label, value, color, onClick }) {
   return (
-    <div style={s.statCard}>
+    <div
+      style={{ ...s.statCard, cursor: onClick ? 'pointer' : 'default' }}
+      onClick={onClick}
+      title={onClick ? 'View in Account Queue' : undefined}
+    >
       <div style={s.statLabel}>{label}</div>
       <div style={{ ...s.statVal, color: color || 'var(--text)' }}>{value}</div>
+      {onClick && <div style={{ fontSize: 9, color: 'var(--text-3)', marginTop: 3 }}>View in queue →</div>}
     </div>
   )
 }
@@ -67,8 +74,10 @@ export default function ExecSummary({ data, onNavigate }) {
 
   const relTotal = Object.values(relDist).reduce((a, b) => a + b, 0)
 
+  // key is preserved for click navigation
   const healthData = Object.entries(healthDist).map(([key, count]) => ({
     label: HEALTH_LABELS[key] || key,
+    key,
     count,
     color: HEALTH_COLORS[key] || '#888',
   }))
@@ -80,26 +89,53 @@ export default function ExecSummary({ data, onNavigate }) {
 
   return (
     <div>
+
       {/* Top stats */}
       <div style={s.statsGrid}>
         <StatCard label="Total pipeline ACV" value={fmtACV(es.total_acv)} />
-        <StatCard label="ACV at risk" value={fmtACV(es.acv_at_risk)} color="#dc2626" />
-        <StatCard label="Critical / at-risk" value={`${(healthDist.critical || 0) + (healthDist['at-risk'] || 0)}`} color="#d97706" />
-        <StatCard label="Unreliable commits" value={es.unreliable_commit_count} color="#dc2626" />
+        <StatCard
+          label="ACV at risk"
+          value={fmtACV(es.acv_at_risk)}
+          color="#dc2626"
+          onClick={onNavigate ? () => onNavigate({ sortBy: 'acv-desc', health: 'at-risk' }) : undefined}
+        />
+        <StatCard
+          label="Critical / at-risk"
+          value={`${(healthDist.critical || 0) + (healthDist['at-risk'] || 0)}`}
+          color="#d97706"
+          onClick={onNavigate ? () => onNavigate({ sortBy: 'health-asc' }) : undefined}
+        />
+        <StatCard
+          label="Unreliable commits"
+          value={es.unreliable_commit_count}
+          color="#dc2626"
+          onClick={onNavigate ? () => onNavigate({ reliability: 'unreliable' }) : undefined}
+        />
         <StatCard label="Avg health score" value={`${es.avg_health_score}/100`} color="#2563eb" />
       </div>
 
       <div style={s.twoCol}>
+
         {/* Left panel */}
         <div>
           <div style={s.panel}>
+
             <div style={s.sectionLabel}>Health distribution</div>
             <ResponsiveContainer width="100%" height={130}>
               <BarChart data={healthData} layout="vertical" margin={{ left: 10, right: 30, top: 0, bottom: 0 }}>
                 <XAxis type="number" tick={{ fontSize: 10, fill: 'var(--text-3)' }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="label" width={110} tick={{ fontSize: 11, fill: 'var(--text-2)' }} axisLine={false} tickLine={false} />
-                <Tooltip formatter={(v) => [`${v} deals`, '']} contentStyle={{ fontSize: 12, borderRadius: 6, border: '0.5px solid var(--border)' }} />
-                <Bar dataKey="count" radius={3}>
+                <Tooltip
+                  formatter={(v) => [`${v} accounts`, '']}
+                  contentStyle={{ fontSize: 12, borderRadius: 6, border: '0.5px solid var(--border)' }}
+                  cursor={{ fill: 'var(--bg-3)' }}
+                />
+                <Bar
+                  dataKey="count"
+                  radius={3}
+                  cursor={onNavigate ? 'pointer' : 'default'}
+                  onClick={onNavigate ? (d) => onNavigate({ health: d.key }) : undefined}
+                >
                   {healthData.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Bar>
               </BarChart>
@@ -107,14 +143,20 @@ export default function ExecSummary({ data, onNavigate }) {
 
             <div style={{ ...s.sectionLabel, marginTop: 14 }}>Forecast reliability</div>
             {Object.entries(relDist).map(([label, count]) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+              <div
+                key={label}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5, cursor: onNavigate ? 'pointer' : 'default' }}
+                onClick={onNavigate ? () => onNavigate({ reliability: label }) : undefined}
+                title={onNavigate ? `View ${label} accounts in queue` : undefined}
+              >
                 <span style={{ fontSize: 11, color: 'var(--text-2)', width: 90 }}>{label}</span>
                 <div style={{ flex: 1, height: 5, background: 'var(--bg-3)', borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ height: 5, borderRadius: 3, width: `${Math.round(count / (relTotal || 1) * 100)}%`, background: label === 'reliable' ? '#16a34a' : label === 'questionable' ? '#d97706' : '#dc2626' }} />
+                  <div style={{ height: 5, borderRadius: 3, width: `${Math.round(count / (relTotal || 1) * 100)}%`, background: REL_COLOR[label] || '#888' }} />
                 </div>
                 <span style={{ fontSize: 11, color: 'var(--text-2)', minWidth: 24 }}>{count}</span>
               </div>
             ))}
+
           </div>
 
           <div style={{ ...s.panel, marginTop: 10 }}>
@@ -125,13 +167,23 @@ export default function ExecSummary({ data, onNavigate }) {
             <CovRow label="Use case defined" pct={cov.use_case_defined_pct} />
             <CovRow label="Competitive logged" pct={cov.competitive_crm_pct} />
             <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-              <div style={{ flex: 1, background: 'var(--bg-3)', borderRadius: 8, padding: '8px 10px' }}>
+              <div
+                style={{ flex: 1, background: 'var(--bg-3)', borderRadius: 8, padding: '8px 10px', cursor: onNavigate ? 'pointer' : 'default' }}
+                onClick={onNavigate ? () => onNavigate({ funding: true }) : undefined}
+                title={onNavigate ? 'View accounts with funding detected' : undefined}
+              >
                 <div style={s.statLabel}>Funding detected</div>
                 <div style={{ fontSize: 16, fontWeight: 500, color: '#d97706' }}>{cov.funding_detected_count} accounts</div>
+                {onNavigate && <div style={{ fontSize: 9, color: 'var(--text-3)', marginTop: 2 }}>View in queue →</div>}
               </div>
-              <div style={{ flex: 1, background: 'var(--bg-3)', borderRadius: 8, padding: '8px 10px' }}>
+              <div
+                style={{ flex: 1, background: 'var(--bg-3)', borderRadius: 8, padding: '8px 10px', cursor: onNavigate ? 'pointer' : 'default' }}
+                onClick={onNavigate ? () => onNavigate({ urgency: true }) : undefined}
+                title={onNavigate ? 'View accounts with active urgency signals' : undefined}
+              >
                 <div style={s.statLabel}>Active urgency signals</div>
                 <div style={{ fontSize: 16, fontWeight: 500, color: '#d97706' }}>{cov.urgency_signal_count} accounts</div>
+                {onNavigate && <div style={{ fontSize: 9, color: 'var(--text-3)', marginTop: 2 }}>View in queue →</div>}
               </div>
             </div>
           </div>
@@ -154,18 +206,25 @@ export default function ExecSummary({ data, onNavigate }) {
           <div style={{ ...s.panel, marginTop: 10 }}>
             <div style={s.sectionLabel}>Segment breakdown</div>
             {Object.entries(es.segment_breakdown || {}).map(([seg, d]) => (
-              <div key={seg} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: '0.5px solid var(--border)' }}>
+              <div
+                key={seg}
+                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0', borderBottom: '0.5px solid var(--border)', cursor: onNavigate ? 'pointer' : 'default' }}
+                onClick={onNavigate ? () => onNavigate({ segment: seg }) : undefined}
+                title={onNavigate ? `View ${seg} accounts in queue` : undefined}
+              >
                 <span style={{ fontSize: 12, fontWeight: 500 }}>{seg}</span>
-                <div style={{ display: 'flex', gap: 12, fontSize: 11, color: 'var(--text-2)' }}>
+                <div style={{ display: 'flex', gap: 12, fontSize: 11, color: 'var(--text-2)', alignItems: 'center' }}>
                   <span>{d.count} accts</span>
                   <span style={{ color: '#2563eb' }}>{d.avg_health}/100</span>
                   <span>{fmtACV(d.total_acv)}</span>
                   <span style={{ color: d.at_risk_pct > 0.2 ? '#dc2626' : 'var(--text-2)' }}>{Math.round(d.at_risk_pct * 100)}% at risk</span>
+                  {onNavigate && <span style={{ fontSize: 9, color: 'var(--text-3)' }}>→</span>}
                 </div>
               </div>
             ))}
           </div>
         </div>
+
       </div>
 
       {/* Insights */}
@@ -221,6 +280,7 @@ export default function ExecSummary({ data, onNavigate }) {
           </tbody>
         </table>
       </div>
+
     </div>
   )
 }
