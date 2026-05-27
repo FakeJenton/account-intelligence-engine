@@ -1,0 +1,17 @@
+# Generated outputs (re-run scripts to regenerate)
+outputs/
+/data/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Node / React app (handled by dte-app/.gitignore too)
+dte-app/node_modules/
+dte-app/dist/
+dte-app/.vercel/
+dte-app/.env
+dte-app/.env.local
+*.log
