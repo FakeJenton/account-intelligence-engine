@@ -25,6 +25,13 @@ export const CONFIDENCE_COLORS = {
   unverified: { bg: 'var(--bg-2)', text: 'var(--text-3)' },
 }
 
+export const HEALTH_LABELS = {
+  'critical': 'Critical',
+  'at-risk': 'At Risk',
+  'needs-attention': 'Needs Attention',
+  'healthy': 'Healthy',
+}
+
 export const SEGMENT_COLORS = {
   Enterprise: '#6366f1',
   'Mid-Market': '#0ea5e9',

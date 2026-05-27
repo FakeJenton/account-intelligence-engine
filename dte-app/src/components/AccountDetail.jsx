@@ -16,6 +16,9 @@ const s = {
     fontSize: 10, fontWeight: 500, color: 'var(--text-3)',
     textTransform: 'uppercase', letterSpacing: '0.07em', margin: '10px 0 5px',
   },
+  divider: {
+    borderTop: '0.5px solid var(--border)', margin: '14px 0 10px',
+  },
   scoreBars: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 6, margin: '10px 0' },
   barItem: {},
   barLbl: { fontSize: 10, color: 'var(--text-2)', marginBottom: 2 },
@@ -90,6 +93,7 @@ export default function AccountDetail({ account }) {
 
   return (
     <div style={s.panel}>
+
       {/* Header */}
       <div style={s.header}>
         <div>
@@ -109,11 +113,39 @@ export default function AccountDetail({ account }) {
         </div>
       </div>
 
+      {/* Pre-call angle — actionable content first */}
+      <div style={s.sectionLabel}>
+        Pre-call angle <ConfBadge conf={action.angle_confidence} />
+      </div>
+      <div style={{ ...s.gapItem, borderLeftColor: '#d97706', color: 'var(--text)', fontWeight: 400 }}>
+        <strong>{action.top_angle}</strong>
+      </div>
+      {action.what_not_to_do && (
+        <div style={s.dontBox}>
+          <strong>Don't:</strong> {action.what_not_to_do}
+        </div>
+      )}
+
+      {/* First move */}
+      <div style={s.sectionLabel}>First move — do this today</div>
+      <div style={s.firstMove}>
+        {formatFirstMove(action.first_move || action.first_move_preview)}
+      </div>
+
+      {/* Divider before diagnostic detail */}
+      <div style={s.divider} />
+
       {/* Score overview */}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 16, marginBottom: 8 }}>
-        <span style={{ fontSize: 22, fontWeight: 500 }}>{health.overall_score}<span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-2)' }}>/100</span></span>
+        <span style={{ fontSize: 22, fontWeight: 500 }}>
+          {health.overall_score}
+          <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
+        </span>
         <span style={{ fontSize: 14, color: 'var(--text-2)' }}>health</span>
-        <span style={{ fontSize: 16, fontWeight: 500, marginLeft: 8 }}>{intelligence.readiness_score}<span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-2)' }}>/100</span></span>
+        <span style={{ fontSize: 16, fontWeight: 500, marginLeft: 8 }}>
+          {intelligence.readiness_score}
+          <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
+        </span>
         <span style={{ fontSize: 12, color: 'var(--text-2)' }}>intel ready</span>
       </div>
 
@@ -125,7 +157,7 @@ export default function AccountDetail({ account }) {
         <DimBar label="Reliability" value={health.reliability} color={rc} />
       </div>
 
-      {/* Critical gaps */}
+      {/* Critical gaps + contradictions */}
       {gaps.critical > 0 && (
         <>
           <div style={s.sectionLabel}>{gaps.critical} critical gaps · {gaps.contradictions} contradictions</div>
@@ -147,7 +179,7 @@ export default function AccountDetail({ account }) {
       {/* Intelligence synthesis */}
       <div style={s.sectionLabel}>Intelligence synthesis</div>
       <div style={s.intelGrid}>
-        {/* Champion */}
+
         <div style={s.intelCard}>
           <div style={s.intelLbl}>Champion <ConfBadge conf={intelligence.champion.confidence} /></div>
           <div style={s.intelVal}>{intelligence.champion.has_crm_data ? 'Logged' : 'Not logged'}</div>
@@ -159,7 +191,6 @@ export default function AccountDetail({ account }) {
           ))}
         </div>
 
-        {/* Exec engagement */}
         <div style={s.intelCard}>
           <div style={s.intelLbl}>Exec engagement</div>
           <div style={{ ...s.intelVal, color: intelligence.economic_buyer.exec_engaged ? '#16a34a' : '#dc2626' }}>
@@ -173,12 +204,13 @@ export default function AccountDetail({ account }) {
           ))}
         </div>
 
-        {/* Competitive */}
         <div style={s.intelCard}>
           <div style={s.intelLbl}>Competitive <ConfBadge conf={intelligence.competitive.confidence} /></div>
           <div style={s.intelVal}>
             {intelligence.competitive.has_crm_data ? 'Logged' : 'Not logged'}
-            {intelligence.competitive.pricing_pressure && <span style={{ color: '#d97706', fontSize: 11, fontWeight: 400 }}> · ⚠️ pricing pressure</span>}
+            {intelligence.competitive.pricing_pressure && (
+              <span style={{ color: '#d97706', fontSize: 11, fontWeight: 400 }}> · ⚠️ pricing pressure</span>
+            )}
           </div>
           {intelligence.competitive.signals?.slice(0, 1).map((sig, i) => (
             <div key={i} style={{ fontSize: 11, color: 'var(--text-2)', marginTop: 3 }}>
@@ -187,7 +219,6 @@ export default function AccountDetail({ account }) {
           ))}
         </div>
 
-        {/* Use case */}
         <div style={s.intelCard}>
           <div style={s.intelLbl}>Use case</div>
           <div style={{ fontSize: 11, lineHeight: 1.4, color: intelligence.use_case.has_crm_data ? 'var(--text)' : 'var(--text-2)' }}>
@@ -199,6 +230,7 @@ export default function AccountDetail({ account }) {
             </div>
           )}
         </div>
+
       </div>
 
       {/* Timing signals */}
@@ -216,24 +248,6 @@ export default function AccountDetail({ account }) {
         </>
       )}
 
-      {/* Pre-call angle */}
-      <div style={s.sectionLabel}>
-        Pre-call angle <ConfBadge conf={action.angle_confidence} />
-      </div>
-      <div style={{ ...s.gapItem, borderLeftColor: '#d97706', color: 'var(--text)', fontWeight: 400 }}>
-        <strong>{action.top_angle}</strong>
-      </div>
-      {action.what_not_to_do && (
-        <div style={s.dontBox}>
-          <strong>Don't:</strong> {action.what_not_to_do}
-        </div>
-      )}
-
-      {/* First move */}
-      <div style={s.sectionLabel}>First move — do this today</div>
-      <div style={s.firstMove}>
-        {formatFirstMove(action.first_move || action.first_move_preview)}
-      </div>
     </div>
   )
 }

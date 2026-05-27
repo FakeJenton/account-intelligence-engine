@@ -1,5 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
-import { fmtACV, HEALTH_COLORS } from '../utils'
+import { fmtACV, HEALTH_COLORS, HEALTH_LABELS } from '../utils'
 
 const s = {
   section: { marginBottom: 24 },
@@ -59,14 +59,18 @@ function CovRow({ label, pct, color = '#2563eb' }) {
   )
 }
 
-export default function ExecSummary({ data }) {
+export default function ExecSummary({ data, onNavigate }) {
   const es = data.executive_summary
   const cov = es.intelligence_coverage
   const healthDist = es.health_distribution
   const relDist = es.reliability_distribution
 
-  const healthData = Object.entries(healthDist).map(([label, count]) => ({
-    label, count, color: HEALTH_COLORS[label] || '#888',
+  const relTotal = Object.values(relDist).reduce((a, b) => a + b, 0)
+
+  const healthData = Object.entries(healthDist).map(([key, count]) => ({
+    label: HEALTH_LABELS[key] || key,
+    count,
+    color: HEALTH_COLORS[key] || '#888',
   }))
 
   const topGaps = (es.top_gap_types || []).slice(0, 6).map(g => ({
@@ -106,7 +110,7 @@ export default function ExecSummary({ data }) {
               <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
                 <span style={{ fontSize: 11, color: 'var(--text-2)', width: 90 }}>{label}</span>
                 <div style={{ flex: 1, height: 5, background: 'var(--bg-3)', borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ height: 5, borderRadius: 3, width: `${Math.round(count / 200 * 100)}%`, background: label === 'reliable' ? '#16a34a' : label === 'questionable' ? '#d97706' : '#dc2626' }} />
+                  <div style={{ height: 5, borderRadius: 3, width: `${Math.round(count / (relTotal || 1) * 100)}%`, background: label === 'reliable' ? '#16a34a' : label === 'questionable' ? '#d97706' : '#dc2626' }} />
                 </div>
                 <span style={{ fontSize: 11, color: 'var(--text-2)', minWidth: 24 }}>{count}</span>
               </div>
@@ -169,7 +173,17 @@ export default function ExecSummary({ data }) {
         <div style={s.sectionLabel}>Non-obvious findings</div>
         {(es.non_obvious_insights || []).map((ins, i) => (
           <div key={i} style={s.insightCard}>
-            <div style={s.insightTitle}>{ins.title}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={s.insightTitle}>{ins.title}</div>
+              {onNavigate && (
+                <button
+                  onClick={() => onNavigate({})}
+                  style={{ fontSize: 11, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 0 12px', flexShrink: 0, whiteSpace: 'nowrap' }}
+                >
+                  View accounts →
+                </button>
+              )}
+            </div>
             <div style={s.insightBody}>{ins.finding}</div>
             <div style={s.insightImpl}>→ {ins.implication}</div>
           </div>
@@ -189,8 +203,13 @@ export default function ExecSummary({ data }) {
           </thead>
           <tbody>
             {(es.rep_scorecard || []).slice(0, 12).map((r, i) => (
-              <tr key={i}>
-                <td style={s.repTd}>{r.rep_name}</td>
+              <tr
+                key={i}
+                onClick={() => onNavigate?.({ rep: r.rep_name })}
+                style={{ cursor: onNavigate ? 'pointer' : 'default' }}
+                title={onNavigate ? `View ${r.rep_name}'s accounts` : undefined}
+              >
+                <td style={{ ...s.repTd, color: 'var(--text)', fontWeight: 500 }}>{r.rep_name}</td>
                 <td style={s.repTd}>{r.total_accounts}</td>
                 <td style={{ ...s.repTd, color: r.at_risk_count > 1 ? '#dc2626' : 'inherit', fontWeight: r.at_risk_count > 1 ? 500 : 400 }}>{r.at_risk_count}</td>
                 <td style={s.repTd}>{fmtACV(r.total_acv)}</td>

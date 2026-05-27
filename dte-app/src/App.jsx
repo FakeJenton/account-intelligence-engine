@@ -11,6 +11,12 @@ const tabs = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('exec')
+  const [queueNav, setQueueNav] = useState(null)
+
+  function navigateToQueue(filters) {
+    setQueueNav(filters || {})
+    setActiveTab('queue')
+  }
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 20px 40px' }}>
@@ -47,8 +53,14 @@ export default function App() {
         ))}
       </div>
 
-      {activeTab === 'exec' && <ExecSummary data={payload} />}
-      {activeTab === 'queue' && <AccountQueue data={payload} />}
+      {activeTab === 'exec' && <ExecSummary data={payload} onNavigate={navigateToQueue} />}
+      {activeTab === 'queue' && (
+        <AccountQueue
+          data={payload}
+          navFilters={queueNav}
+          onNavConsumed={() => setQueueNav(null)}
+        />
+      )}
     </div>
   )
 }
