@@ -1,66 +1,61 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { fmtACV, HEALTH_COLORS, HEALTH_LABELS } from '../utils'
-
-const s = {
-  section: { marginBottom: 26 },
-  sectionLabel: {
-    fontSize: 11, fontWeight: 600, color: 'var(--text-2)',
-    textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12,
-  },
-  statsGrid: {
-    display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 10, marginBottom: 22,
-  },
-  statCard: {
-    background: 'var(--bg)', borderRadius: 'var(--radius-lg)', padding: '14px 16px',
-    boxShadow: 'var(--shadow-sm)',
-    transition: 'box-shadow 0.15s, transform 0.15s',
-  },
-  statCardInteractive: {
-    cursor: 'pointer',
-  },
-  statLabel: { fontSize: 11, color: 'var(--text-2)', marginBottom: 6, letterSpacing: '-0.005em' },
-  statVal: { fontSize: 22, fontWeight: 600, letterSpacing: '-0.02em' },
-  twoCol: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 22 },
-  panel: {
-    background: 'var(--bg)', borderRadius: 'var(--radius-lg)', padding: '16px 18px',
-    boxShadow: 'var(--shadow-sm)',
-  },
-  covRow: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 },
-  covLabel: { fontSize: 12, color: 'var(--text-2)', width: 160, flexShrink: 0 },
-  covBar: { flex: 1, height: 6, background: 'var(--bg-3)', borderRadius: 3, overflow: 'hidden' },
-  covFill: { height: 6, borderRadius: 3 },
-  covVal: { fontSize: 12, color: 'var(--text-2)', minWidth: 36, textAlign: 'right', fontWeight: 500 },
-  insightCard: {
-    background: 'var(--bg)', borderRadius: 'var(--radius)', padding: '12px 16px',
-    marginBottom: 8, boxShadow: 'var(--shadow-sm)',
-  },
-  insightTitle: { fontSize: 13, fontWeight: 600, marginBottom: 5, letterSpacing: '-0.01em' },
-  insightBody: { fontSize: 13, color: 'var(--text-2)', lineHeight: 1.55, marginBottom: 4 },
-  insightImpl: { fontSize: 12, color: 'var(--text-2)', fontStyle: 'italic' },
-  repTable: { width: '100%', fontSize: 13, borderCollapse: 'separate', borderSpacing: 0 },
-  repTh: {
-    fontSize: 11, fontWeight: 600, color: 'var(--text-3)', textAlign: 'left',
-    padding: '8px 10px', borderBottom: '1px solid var(--border)',
-    textTransform: 'uppercase', letterSpacing: '0.04em',
-  },
-  repTd: { padding: '10px', borderBottom: '1px solid var(--border)', fontSize: 13 },
-}
+import { SectionLabel, StatCard, ArrowIcon } from './ui'
 
 const REL_COLOR = { reliable: 'var(--green)', questionable: 'var(--amber)', unreliable: 'var(--red)' }
 const REL_LABEL = { reliable: 'Reliable', questionable: 'Questionable', unreliable: 'Unreliable' }
 
-function StatCard({ label, value, color, onClick }) {
-  return (
-    <div
-      style={{ ...s.statCard, ...(onClick ? s.statCardInteractive : {}) }}
-      onClick={onClick}
-      title={onClick ? 'View in Account Queue' : undefined}
-    >
-      <div style={s.statLabel}>{label}</div>
-      <div style={{ ...s.statVal, color: color || 'var(--text)' }}>{value}</div>
-      {onClick && <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 4 }}>View in queue →</div>}
-    </div>
-  )
+const s = {
+  section: { marginBottom: 'var(--space-6)' },
+  statsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(5, 1fr)',
+    gap: 'var(--space-3)',
+    marginBottom: 'var(--space-5)',
+  },
+  twoCol: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 'var(--space-4)',
+    marginBottom: 'var(--space-5)',
+  },
+  panel: {
+    background: 'var(--bg)',
+    borderRadius: 'var(--radius-lg)',
+    padding: 'var(--space-4) var(--space-5)',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  covRow: { display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)' },
+  covLabel: { fontSize: 'var(--text-sm)', color: 'var(--text-2)', width: 160, flexShrink: 0 },
+  covBar: { flex: 1, height: 6, background: 'var(--bg-3)', borderRadius: 3, overflow: 'hidden' },
+  covFill: { height: 6, borderRadius: 3 },
+  covVal: { fontSize: 'var(--text-sm)', color: 'var(--text-2)', minWidth: 36, textAlign: 'right', fontWeight: 500 },
+  insightCard: {
+    background: 'var(--bg)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-3) var(--space-4)',
+    marginBottom: 'var(--space-2)',
+    boxShadow: 'var(--shadow-sm)',
+  },
+  insightTitle: { fontSize: 'var(--text-sm)', fontWeight: 600, marginBottom: 'var(--space-1)', letterSpacing: 'var(--track-tight)' },
+  insightBody: { fontSize: 'var(--text-sm)', color: 'var(--text-2)', lineHeight: 1.55, marginBottom: 'var(--space-1)' },
+  insightImpl: { fontSize: 'var(--text-xs)', color: 'var(--text-2)', fontStyle: 'italic' },
+
+  table: { width: '100%', fontSize: 'var(--text-sm)', borderCollapse: 'separate', borderSpacing: 0 },
+  th: {
+    fontSize: 'var(--text-xs)',
+    fontWeight: 600,
+    color: 'var(--text-3)',
+    textAlign: 'left',
+    padding: 'var(--space-2) var(--space-3)',
+    borderBottom: '1px solid var(--border)',
+    background: 'transparent',
+  },
+  td: {
+    padding: 'var(--space-3)',
+    fontSize: 'var(--text-sm)',
+    borderBottom: '1px solid var(--border)',
+  },
 }
 
 function CovRow({ label, pct, color = 'var(--blue)' }) {
@@ -71,6 +66,40 @@ function CovRow({ label, pct, color = 'var(--blue)' }) {
         <div style={{ ...s.covFill, width: `${Math.round(pct * 100)}%`, background: color }} />
       </div>
       <span style={s.covVal}>{Math.round(pct * 100)}%</span>
+    </div>
+  )
+}
+
+function MiniTile({ label, value, color, onClick }) {
+  const interactive = !!onClick
+  return (
+    <div
+      onClick={onClick}
+      className={interactive ? 'card-interactive' : undefined}
+      style={{
+        flex: 1,
+        background: 'var(--bg-2)',
+        borderRadius: 'var(--radius)',
+        padding: 'var(--space-3)',
+        cursor: interactive ? 'pointer' : 'default',
+        position: 'relative',
+      }}
+      role={interactive ? 'button' : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      onKeyDown={interactive ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick() } } : undefined}
+    >
+      <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginBottom: 'var(--space-1)' }}>{label}</div>
+      <div style={{
+        fontSize: 'var(--text-base)',
+        fontWeight: 600,
+        color: color || 'var(--text)',
+        letterSpacing: 'var(--track-tight)',
+      }}>
+        {value}
+      </div>
+      {interactive && (
+        <ArrowIcon style={{ position: 'absolute', top: 10, right: 10, color: 'var(--text-3)', opacity: 0.6 }} size={12} />
+      )}
     </div>
   )
 }
@@ -131,14 +160,20 @@ export default function ExecSummary({ data, onNavigate }) {
         <div>
           <div style={s.panel}>
 
-            <div style={s.sectionLabel}>Health distribution</div>
+            <SectionLabel>Health distribution</SectionLabel>
             <ResponsiveContainer width="100%" height={140}>
               <BarChart data={healthData} layout="vertical" margin={{ left: 10, right: 30, top: 0, bottom: 0 }}>
-                <XAxis type="number" tick={{ fontSize: 10, fill: 'var(--text-3)' }} axisLine={false} tickLine={false} />
+                <XAxis type="number" tick={{ fontSize: 11, fill: 'var(--text-3)' }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="label" width={110} tick={{ fontSize: 12, fill: 'var(--text-2)' }} axisLine={false} tickLine={false} />
                 <Tooltip
                   formatter={(v) => [`${v} accounts`, '']}
-                  contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}
+                  contentStyle={{
+                    fontSize: 12,
+                    borderRadius: 10,
+                    border: '1px solid var(--border)',
+                    boxShadow: 'var(--shadow-md)',
+                    background: 'var(--bg)',
+                  }}
                   cursor={{ fill: 'var(--bg-2)' }}
                 />
                 <Bar
@@ -147,55 +182,64 @@ export default function ExecSummary({ data, onNavigate }) {
                   cursor={onNavigate ? 'pointer' : 'default'}
                   onClick={onNavigate ? (d) => onNavigate({ health: d.key }) : undefined}
                 >
-                  {healthData.map((d, i) => <Cell key={i} fill={d.color} />)}
+                  {healthData.map((d, i) => <Cell key={i} fill={d.color} fillOpacity={0.85} />)}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
 
-            <div style={{ ...s.sectionLabel, marginTop: 18 }}>Forecast reliability</div>
+            <SectionLabel style={{ marginTop: 'var(--space-5)' }}>Forecast reliability</SectionLabel>
             {Object.entries(relDist).map(([label, count]) => (
               <div
                 key={label}
-                style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 7, cursor: onNavigate ? 'pointer' : 'default' }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 'var(--space-3)',
+                  marginBottom: 'var(--space-2)',
+                  cursor: onNavigate ? 'pointer' : 'default',
+                  padding: '2px 4px',
+                  margin: '-2px -4px',
+                  borderRadius: 6,
+                }}
                 onClick={onNavigate ? () => onNavigate({ reliability: label }) : undefined}
                 title={onNavigate ? `View ${REL_LABEL[label] || label} accounts in queue` : undefined}
+                role={onNavigate ? 'button' : undefined}
+                tabIndex={onNavigate ? 0 : undefined}
+                onKeyDown={onNavigate ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNavigate({ reliability: label }) } } : undefined}
               >
-                <span style={{ fontSize: 12, color: 'var(--text-2)', width: 96 }}>{REL_LABEL[label] || label}</span>
+                <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-2)', width: 96 }}>{REL_LABEL[label] || label}</span>
                 <div style={{ flex: 1, height: 6, background: 'var(--bg-3)', borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ height: 6, borderRadius: 3, width: `${Math.round(count / (relTotal || 1) * 100)}%`, background: REL_COLOR[label] || '#888' }} />
+                  <div style={{
+                    height: 6, borderRadius: 3,
+                    width: `${Math.round(count / (relTotal || 1) * 100)}%`,
+                    background: REL_COLOR[label] || '#888',
+                    opacity: 0.85,
+                  }} />
                 </div>
-                <span style={{ fontSize: 12, color: 'var(--text-2)', minWidth: 28, fontWeight: 500 }}>{count}</span>
+                <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-2)', minWidth: 28, fontWeight: 500 }}>{count}</span>
               </div>
             ))}
 
           </div>
 
-          <div style={{ ...s.panel, marginTop: 12 }}>
-            <div style={s.sectionLabel}>CRM data coverage</div>
+          <div style={{ ...s.panel, marginTop: 'var(--space-3)' }}>
+            <SectionLabel>CRM data coverage</SectionLabel>
             <CovRow label="Champion logged" pct={cov.champion_crm_pct} />
             <CovRow label="Economic buyer" pct={cov.econ_buyer_crm_pct} />
             <CovRow label="Exec sponsor engaged" pct={cov.exec_engaged_pct} color={cov.exec_engaged_pct < 0.5 ? 'var(--amber)' : 'var(--blue)'} />
             <CovRow label="Use case defined" pct={cov.use_case_defined_pct} />
             <CovRow label="Competitive logged" pct={cov.competitive_crm_pct} />
-            <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
-              <div
-                style={{ flex: 1, background: 'var(--bg-2)', borderRadius: 'var(--radius)', padding: '10px 12px', cursor: onNavigate ? 'pointer' : 'default' }}
+            <div style={{ display: 'flex', gap: 'var(--space-3)', marginTop: 'var(--space-4)' }}>
+              <MiniTile
+                label="Funding detected"
+                value={<>{cov.funding_detected_count} <span style={{ fontSize: 'var(--text-sm)', fontWeight: 400, color: 'var(--text-2)' }}>accounts</span></>}
+                color="var(--amber)"
                 onClick={onNavigate ? () => onNavigate({ funding: true }) : undefined}
-                title={onNavigate ? 'View accounts with funding detected' : undefined}
-              >
-                <div style={s.statLabel}>Funding detected</div>
-                <div style={{ fontSize: 17, fontWeight: 600, color: 'var(--amber)', letterSpacing: '-0.01em' }}>{cov.funding_detected_count} <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-2)' }}>accounts</span></div>
-                {onNavigate && <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 3 }}>View in queue →</div>}
-              </div>
-              <div
-                style={{ flex: 1, background: 'var(--bg-2)', borderRadius: 'var(--radius)', padding: '10px 12px', cursor: onNavigate ? 'pointer' : 'default' }}
+              />
+              <MiniTile
+                label="Active urgency signals"
+                value={<>{cov.urgency_signal_count} <span style={{ fontSize: 'var(--text-sm)', fontWeight: 400, color: 'var(--text-2)' }}>accounts</span></>}
+                color="var(--amber)"
                 onClick={onNavigate ? () => onNavigate({ urgency: true }) : undefined}
-                title={onNavigate ? 'View accounts with active urgency signals' : undefined}
-              >
-                <div style={s.statLabel}>Active urgency signals</div>
-                <div style={{ fontSize: 17, fontWeight: 600, color: 'var(--amber)', letterSpacing: '-0.01em' }}>{cov.urgency_signal_count} <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-2)' }}>accounts</span></div>
-                {onNavigate && <div style={{ fontSize: 10, color: 'var(--text-3)', marginTop: 3 }}>View in queue →</div>}
-              </div>
+              />
             </div>
           </div>
         </div>
@@ -203,42 +247,51 @@ export default function ExecSummary({ data, onNavigate }) {
         {/* Right column */}
         <div>
           <div style={s.panel}>
-            <div style={s.sectionLabel}>Top gap types across fleet</div>
-            <ResponsiveContainer width="100%" height={175}>
+            <SectionLabel>Top gap types across fleet</SectionLabel>
+            <ResponsiveContainer width="100%" height={180}>
               <BarChart data={topGaps} layout="vertical" margin={{ left: 10, right: 30, top: 0, bottom: 0 }}>
-                <XAxis type="number" tick={{ fontSize: 10, fill: 'var(--text-3)' }} axisLine={false} tickLine={false} />
-                <YAxis type="category" dataKey="label" width={130} tick={{ fontSize: 11, fill: 'var(--text-2)' }} axisLine={false} tickLine={false} />
+                <XAxis type="number" tick={{ fontSize: 11, fill: 'var(--text-3)' }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="label" width={130} tick={{ fontSize: 12, fill: 'var(--text-2)' }} axisLine={false} tickLine={false} />
                 <Tooltip
                   formatter={(v) => [`${v} accounts`, '']}
-                  contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid var(--border)', boxShadow: 'var(--shadow-md)' }}
+                  contentStyle={{
+                    fontSize: 12,
+                    borderRadius: 10,
+                    border: '1px solid var(--border)',
+                    boxShadow: 'var(--shadow-md)',
+                    background: 'var(--bg)',
+                  }}
                   cursor={{ fill: 'var(--bg-2)' }}
                 />
-                <Bar dataKey="count" fill="var(--blue)" radius={4} />
+                <Bar dataKey="count" fill="var(--blue)" fillOpacity={0.85} radius={4} />
               </BarChart>
             </ResponsiveContainer>
           </div>
 
-          <div style={{ ...s.panel, marginTop: 12 }}>
-            <div style={s.sectionLabel}>Segment breakdown</div>
+          <div style={{ ...s.panel, marginTop: 'var(--space-3)' }}>
+            <SectionLabel>Segment breakdown</SectionLabel>
             {Object.entries(es.segment_breakdown || {}).map(([seg, d], idx, arr) => (
               <div
                 key={seg}
                 style={{
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '10px 0',
+                  padding: 'var(--space-3) 0',
                   borderBottom: idx < arr.length - 1 ? '1px solid var(--border)' : 'none',
                   cursor: onNavigate ? 'pointer' : 'default',
                 }}
                 onClick={onNavigate ? () => onNavigate({ segment: seg }) : undefined}
                 title={onNavigate ? `View ${seg} accounts in queue` : undefined}
+                role={onNavigate ? 'button' : undefined}
+                tabIndex={onNavigate ? 0 : undefined}
+                onKeyDown={onNavigate ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onNavigate({ segment: seg }) } } : undefined}
               >
-                <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: '-0.01em' }}>{seg}</span>
-                <div style={{ display: 'flex', gap: 14, fontSize: 12, color: 'var(--text-2)', alignItems: 'center' }}>
+                <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, letterSpacing: 'var(--track-tight)' }}>{seg}</span>
+                <div style={{ display: 'flex', gap: 'var(--space-4)', fontSize: 'var(--text-xs)', color: 'var(--text-2)', alignItems: 'center' }}>
                   <span>{d.count} accts</span>
                   <span style={{ color: 'var(--blue)', fontWeight: 500 }}>{d.avg_health}/100</span>
                   <span style={{ fontWeight: 500 }}>{fmtACV(d.total_acv)}</span>
                   <span style={{ color: d.at_risk_pct > 0.2 ? 'var(--red)' : 'var(--text-2)' }}>{Math.round(d.at_risk_pct * 100)}% at risk</span>
-                  {onNavigate && <span style={{ fontSize: 11, color: 'var(--text-3)' }}>→</span>}
+                  {onNavigate && <ArrowIcon size={12} style={{ color: 'var(--text-3)' }} />}
                 </div>
               </div>
             ))}
@@ -249,7 +302,7 @@ export default function ExecSummary({ data, onNavigate }) {
 
       {/* Insights */}
       <div style={s.section}>
-        <div style={s.sectionLabel}>Non-obvious findings</div>
+        <SectionLabel>Non-obvious findings</SectionLabel>
         {(es.non_obvious_insights || []).map((ins, i) => (
           <div key={i} style={s.insightCard}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -257,47 +310,63 @@ export default function ExecSummary({ data, onNavigate }) {
               {onNavigate && (
                 <button
                   onClick={() => onNavigate({})}
-                  style={{ fontSize: 11, color: 'var(--text-3)', background: 'none', border: 'none', cursor: 'pointer', padding: '0 0 0 14px', flexShrink: 0, whiteSpace: 'nowrap' }}
+                  style={{
+                    fontSize: 'var(--text-xs)',
+                    color: 'var(--text-3)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '0 0 0 14px',
+                    flexShrink: 0,
+                    whiteSpace: 'nowrap',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 4,
+                  }}
                 >
-                  View accounts →
+                  View accounts <ArrowIcon size={12} />
                 </button>
               )}
             </div>
             <div style={s.insightBody}>{ins.finding}</div>
-            <div style={s.insightImpl}>→ {ins.implication}</div>
+            <div style={s.insightImpl}>{ins.implication}</div>
           </div>
         ))}
       </div>
 
       {/* Rep scorecard */}
       <div style={s.section}>
-        <div style={s.sectionLabel}>Rep scorecard — by at-risk exposure</div>
-        <div style={{ ...s.panel, padding: '6px 14px 10px' }}>
-          <table style={s.repTable}>
+        <SectionLabel>Rep scorecard, by at-risk exposure</SectionLabel>
+        <div style={{ ...s.panel, padding: 0, overflow: 'hidden' }}>
+          <table className="table-zebra" style={s.table}>
             <thead>
               <tr>
                 {['Rep', 'Accounts', 'At-risk', 'Total ACV', 'ACV at risk', 'Avg health', 'Dominant gap'].map(h => (
-                  <th key={h} style={s.repTh}>{h}</th>
+                  <th key={h} style={s.th}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {(es.rep_scorecard || []).slice(0, 12).map((r, i, arr) => (
-                <tr
-                  key={i}
-                  onClick={() => onNavigate?.({ rep: r.rep_name })}
-                  style={{ cursor: onNavigate ? 'pointer' : 'default' }}
-                  title={onNavigate ? `View ${r.rep_name}'s accounts` : undefined}
-                >
-                  <td style={{ ...s.repTd, fontWeight: 600, letterSpacing: '-0.005em', ...(i === arr.length - 1 ? { borderBottom: 'none' } : {}) }}>{r.rep_name}</td>
-                  <td style={{ ...s.repTd, ...(i === arr.length - 1 ? { borderBottom: 'none' } : {}) }}>{r.total_accounts}</td>
-                  <td style={{ ...s.repTd, color: r.at_risk_count > 1 ? 'var(--red)' : 'inherit', fontWeight: r.at_risk_count > 1 ? 600 : 400, ...(i === arr.length - 1 ? { borderBottom: 'none' } : {}) }}>{r.at_risk_count}</td>
-                  <td style={{ ...s.repTd, ...(i === arr.length - 1 ? { borderBottom: 'none' } : {}) }}>{fmtACV(r.total_acv)}</td>
-                  <td style={{ ...s.repTd, ...(i === arr.length - 1 ? { borderBottom: 'none' } : {}) }}>{fmtACV((es.accounts_by_rep || {})[r.rep_name]?.acv_at_risk || 0)}</td>
-                  <td style={{ ...s.repTd, color: r.avg_health_score < 60 ? 'var(--red)' : r.avg_health_score < 75 ? 'var(--amber)' : 'var(--green)', fontWeight: 600, ...(i === arr.length - 1 ? { borderBottom: 'none' } : {}) }}>{r.avg_health_score}</td>
-                  <td style={{ ...s.repTd, fontSize: 12, color: 'var(--text-2)', ...(i === arr.length - 1 ? { borderBottom: 'none' } : {}) }}>{(r.dominant_gap || '').replace(/_/g, ' ')}</td>
-                </tr>
-              ))}
+              {(es.rep_scorecard || []).slice(0, 12).map((r, i, arr) => {
+                const isLast = i === arr.length - 1
+                const tdStyle = { ...s.td, ...(isLast ? { borderBottom: 'none' } : {}) }
+                return (
+                  <tr
+                    key={i}
+                    onClick={() => onNavigate?.({ rep: r.rep_name })}
+                    style={{ cursor: onNavigate ? 'pointer' : 'default' }}
+                    title={onNavigate ? `View ${r.rep_name}'s accounts` : undefined}
+                  >
+                    <td style={{ ...tdStyle, fontWeight: 600, letterSpacing: 'var(--track-tight)' }}>{r.rep_name}</td>
+                    <td style={tdStyle}>{r.total_accounts}</td>
+                    <td style={{ ...tdStyle, color: r.at_risk_count > 1 ? 'var(--red)' : 'inherit', fontWeight: r.at_risk_count > 1 ? 600 : 400 }}>{r.at_risk_count}</td>
+                    <td style={tdStyle}>{fmtACV(r.total_acv)}</td>
+                    <td style={tdStyle}>{fmtACV((es.accounts_by_rep || {})[r.rep_name]?.acv_at_risk || 0)}</td>
+                    <td style={{ ...tdStyle, color: r.avg_health_score < 60 ? 'var(--red)' : r.avg_health_score < 75 ? 'var(--amber)' : 'var(--green)', fontWeight: 600 }}>{r.avg_health_score}</td>
+                    <td style={{ ...tdStyle, fontSize: 'var(--text-xs)', color: 'var(--text-2)' }}>{(r.dominant_gap || '').replace(/_/g, ' ')}</td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

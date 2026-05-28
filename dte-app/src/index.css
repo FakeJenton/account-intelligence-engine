@@ -1,36 +1,85 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Backgrounds */
-  --page: #f5f5f7;        /* page / body — soft off-white (Apple-style) */
-  --bg: #ffffff;          /* elevated card / panel surface */
-  --bg-2: #f2f2f4;        /* inset within cards (inputs, nested boxes) */
-  --bg-3: #e8e8ec;        /* deepest inset (progress-bar troughs, etc.) */
+  /* Surfaces */
+  --page: #f5f5f7;
+  --bg:   #ffffff;
+  --bg-2: #f2f2f4;
+  --bg-3: #e8e8ec;
 
   /* Text */
-  --text: #1d1d1f;
+  --text:   #1d1d1f;
   --text-2: #6e6e73;
   --text-3: #98989d;
 
-  /* Borders — barely-there, lean on shadows + spacing instead */
-  --border: rgba(0,0,0,0.06);
+  /* Borders */
+  --border:   rgba(0,0,0,0.06);
   --border-2: rgba(0,0,0,0.10);
 
-  /* Status palette — Apple system colors */
+  /* Status palette */
   --red:    #ff3b30;
   --amber:  #ff9500;
   --blue:   #007aff;
   --green:  #34c759;
   --purple: #af52de;
 
-  /* Shadows for elevation */
+  /* Semantic surface tokens (pills, banners, callouts) */
+  --surface-amber-bg:         rgba(255,149,0,0.08);
+  --surface-amber-bg-strong:  rgba(255,149,0,0.14);
+  --surface-amber-border:     rgba(255,149,0,0.22);
+  --surface-amber-text:       #8a5a00;
+
+  --surface-blue-bg:          rgba(0,122,255,0.08);
+  --surface-blue-border:      rgba(0,122,255,0.22);
+  --surface-blue-text:        #0050d0;
+
+  --surface-purple-bg:        rgba(175,82,222,0.07);
+  --surface-purple-border:    rgba(175,82,222,0.22);
+  --surface-purple-text:      #6b21a8;
+
+  --surface-green-bg:         rgba(52,199,89,0.08);
+  --surface-green-border:     rgba(52,199,89,0.22);
+  --surface-green-text:       #1f7a3c;
+
+  --surface-red-bg:           rgba(255,59,48,0.08);
+  --surface-red-border:       rgba(255,59,48,0.22);
+  --surface-red-text:         #a30b00;
+
+  /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
   --shadow:    0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.05);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 24px rgba(0,0,0,0.06), 0 2px 6px rgba(0,0,0,0.04);
 
   /* Radii */
+  --radius-sm: 6px;
   --radius:    10px;
   --radius-lg: 14px;
+
+  /* Type scale — locked, 6 steps */
+  --text-xs:   11px;   /* caption / micro */
+  --text-sm:   13px;   /* body */
+  --text-base: 15px;   /* subhead */
+  --text-lg:   18px;   /* heading */
+  --text-xl:   24px;   /* title */
+  --text-2xl:  32px;   /* display */
+
+  /* Tracking — locked, 3 values */
+  --track-body:    0;
+  --track-tight:   -0.015em;
+  --track-display: -0.025em;
+
+  /* Spacing — 4pt grid */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Focus ring */
+  --ring: 0 0 0 3px rgba(0,122,255,0.35);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,9 +93,32 @@
     --text-3: #6c6c70;
     --border:   rgba(255,255,255,0.08);
     --border-2: rgba(255,255,255,0.14);
+
+    --surface-amber-bg:        rgba(255,149,0,0.14);
+    --surface-amber-bg-strong: rgba(255,149,0,0.20);
+    --surface-amber-border:    rgba(255,149,0,0.30);
+    --surface-amber-text:      #ffb547;
+
+    --surface-blue-bg:         rgba(0,122,255,0.16);
+    --surface-blue-border:     rgba(0,122,255,0.30);
+    --surface-blue-text:       #5fa8ff;
+
+    --surface-purple-bg:       rgba(175,82,222,0.14);
+    --surface-purple-border:   rgba(175,82,222,0.30);
+    --surface-purple-text:     #d7a3ec;
+
+    --surface-green-bg:        rgba(52,199,89,0.14);
+    --surface-green-border:    rgba(52,199,89,0.30);
+    --surface-green-text:      #67d77e;
+
+    --surface-red-bg:          rgba(255,59,48,0.14);
+    --surface-red-border:      rgba(255,59,48,0.30);
+    --surface-red-text:        #ff7a73;
+
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
     --shadow:    0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 24px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.4);
   }
 }
 
@@ -54,37 +126,67 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
   background: var(--page);
   color: var(--text);
-  font-size: 14px;
+  font-size: var(--text-sm);
   line-height: 1.5;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: -0.005em;
+  letter-spacing: var(--track-body);
 }
 
 button {
   cursor: pointer;
   font-family: inherit;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
 }
 
 input {
   font-family: inherit;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
-
-input:focus {
-  outline: none;
-  border-color: var(--border-2) !important;
-}
+input:focus { outline: none; }
 
 select {
   font-family: inherit;
   appearance: none;
   -webkit-appearance: none;
-  padding-right: 22px !important;
+  padding-right: 26px !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%2398989d' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 8px center;
-  transition: border-color 0.15s, background-color 0.15s;
+  background-position: right 10px center;
+  transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+}
+
+/* Card lift on hover for clickable cards */
+.card-interactive {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.card-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Zebra striping for data tables */
+.table-zebra tbody tr:nth-child(even) {
+  background: rgba(0,0,0,0.018);
+}
+@media (prefers-color-scheme: dark) {
+  .table-zebra tbody tr:nth-child(even) {
+    background: rgba(255,255,255,0.025);
+  }
+}
+.table-zebra tbody tr {
+  transition: background 0.12s ease;
+}
+.table-zebra tbody tr:hover {
+  background: var(--bg-2);
 }

@@ -1,106 +1,193 @@
-import { fmtACV, HEALTH_COLORS, RELIABILITY_COLORS, confBadge, fmtPct } from '../utils'
+import { fmtACV, HEALTH_COLORS, RELIABILITY_COLORS, fmtPct } from '../utils'
+import { SectionLabel, Chip, ConfDot, EmptyState } from './ui'
 
 const s = {
   panel: {
     background: 'var(--bg)',
     borderRadius: 'var(--radius-lg)',
-    padding: '18px 20px',
-    marginTop: 8,
+    padding: 'var(--space-5)',
+    marginTop: 'var(--space-2)',
     boxShadow: 'var(--shadow-md)',
   },
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 },
-  title: { fontSize: 17, fontWeight: 600, letterSpacing: '-0.015em' },
-  meta: { fontSize: 12, color: 'var(--text-2)', marginTop: 3, lineHeight: 1.55 },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 'var(--space-4)',
+  },
+  title: {
+    fontSize: 'var(--text-lg)',
+    fontWeight: 600,
+    letterSpacing: 'var(--track-tight)',
+  },
+  meta: {
+    fontSize: 'var(--text-xs)',
+    color: 'var(--text-2)',
+    marginTop: 'var(--space-1)',
+    lineHeight: 1.6,
+    display: 'flex',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 'var(--space-2)',
+  },
   badge: {
-    display: 'inline-block', fontSize: 10, padding: '3px 10px',
-    borderRadius: 999, fontWeight: 600, color: '#fff', marginRight: 5,
-    letterSpacing: '0.01em',
+    display: 'inline-block',
+    fontSize: 'var(--text-xs)',
+    padding: '3px 10px',
+    borderRadius: 999,
+    fontWeight: 600,
+    color: '#fff',
+    marginRight: 'var(--space-1)',
   },
-  sectionLabel: {
-    fontSize: 11, fontWeight: 600, color: 'var(--text-3)',
-    textTransform: 'uppercase', letterSpacing: '0.06em', margin: '16px 0 8px',
-  },
+
   divider: {
-    borderTop: '1px solid var(--border)', margin: '18px 0 12px',
+    borderTop: '1px solid var(--border)',
+    margin: 'var(--space-5) 0 var(--space-3)',
   },
-  scoreBars: { display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 10, margin: '12px 0' },
-  barItem: {},
-  barLbl: { fontSize: 11, color: 'var(--text-2)', marginBottom: 4 },
+
+  scoreBars: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4,1fr)',
+    gap: 'var(--space-3)',
+    margin: 'var(--space-3) 0',
+  },
+  barLbl: { fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginBottom: 'var(--space-1)' },
   barBg: { height: 6, background: 'var(--bg-2)', borderRadius: 3, overflow: 'hidden' },
   barFill: { height: 6, borderRadius: 3 },
-  barVal: { fontSize: 11, color: 'var(--text-2)', marginTop: 4, fontWeight: 500 },
+  barVal: { fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginTop: 'var(--space-1)', fontWeight: 500 },
 
   scoreCard: {
-    background: 'var(--bg-2)', borderRadius: 'var(--radius)',
-    padding: '12px 14px', marginBottom: 8,
+    background: 'var(--bg-2)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-3) var(--space-4)',
+    marginBottom: 'var(--space-2)',
   },
   scoreCardHead: {
-    display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-    marginBottom: 4,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: 'var(--space-1)',
   },
-  scoreCardName: { fontSize: 13, fontWeight: 600, letterSpacing: '-0.01em' },
-  scoreCardPct: { fontSize: 14, fontWeight: 600, letterSpacing: '-0.02em' },
+  scoreCardName: { fontSize: 'var(--text-sm)', fontWeight: 600, letterSpacing: 'var(--track-tight)' },
+  scoreCardPct: { fontSize: 'var(--text-base)', fontWeight: 600, letterSpacing: 'var(--track-display)' },
   scoreCardDesc: {
-    fontSize: 12, color: 'var(--text-2)', lineHeight: 1.5, marginBottom: 6,
+    fontSize: 'var(--text-xs)',
+    color: 'var(--text-2)',
+    lineHeight: 1.5,
+    marginBottom: 'var(--space-2)',
   },
   scoreCardWhy: {
-    fontSize: 12, color: 'var(--text)', lineHeight: 1.55,
+    fontSize: 'var(--text-sm)',
+    color: 'var(--text)',
+    lineHeight: 1.55,
+  },
+  scoreCardWhyLabel: {
+    fontSize: 'var(--text-xs)',
+    fontWeight: 600,
+    color: 'var(--text-2)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    marginBottom: 'var(--space-1)',
   },
 
   gapItem: {
-    fontSize: 13, padding: '8px 12px',
-    background: 'var(--bg-2)', borderRadius: 'var(--radius)',
-    borderLeft: '3px solid var(--border-2)', marginBottom: 6,
-    color: 'var(--text)', lineHeight: 1.5,
+    fontSize: 'var(--text-sm)',
+    padding: 'var(--space-2) var(--space-3)',
+    background: 'var(--surface-red-bg)',
+    borderRadius: 'var(--radius)',
+    borderLeft: '3px solid var(--red)',
+    marginBottom: 'var(--space-2)',
+    color: 'var(--text)',
+    lineHeight: 1.5,
   },
-  gapLabel: { fontWeight: 600, letterSpacing: '-0.005em' },
-  gapContext: { fontSize: 12, color: 'var(--text-2)', marginTop: 3 },
+  gapLabel: { fontWeight: 600, letterSpacing: 'var(--track-tight)' },
+  gapContext: { fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginTop: 'var(--space-1)' },
 
   contradictionItem: {
-    background: 'rgba(175,82,222,0.05)', borderLeft: '3px solid var(--purple)',
-    borderRadius: 'var(--radius)', padding: '8px 12px', fontSize: 13,
-    color: 'var(--text)', marginBottom: 6, lineHeight: 1.5,
-  },
-  contradictionDetail: {
-    fontSize: 12, color: 'var(--text-2)', marginTop: 3,
+    background: 'var(--surface-purple-bg)',
+    borderLeft: '3px solid var(--purple)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-2) var(--space-3)',
+    fontSize: 'var(--text-sm)',
+    color: 'var(--text)',
+    marginBottom: 'var(--space-2)',
+    lineHeight: 1.5,
   },
 
   freshItem: {
-    background: 'rgba(255,149,0,0.06)', borderLeft: '3px solid var(--amber)',
-    borderRadius: 'var(--radius)', padding: '8px 12px', fontSize: 13,
-    color: 'var(--text)', marginBottom: 6, lineHeight: 1.5,
+    background: 'var(--surface-amber-bg)',
+    borderLeft: '3px solid var(--amber)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-2) var(--space-3)',
+    fontSize: 'var(--text-sm)',
+    color: 'var(--text)',
+    marginBottom: 'var(--space-2)',
+    lineHeight: 1.5,
   },
 
-  intelGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 6 },
-  intelCard: { background: 'var(--bg-2)', borderRadius: 'var(--radius)', padding: '10px 12px' },
-  intelLbl: { fontSize: 10, color: 'var(--text-2)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' },
-  intelVal: { fontSize: 13, fontWeight: 500 },
-  confBadge: {
-    display: 'inline-block', fontSize: 10, padding: '2px 8px',
-    borderRadius: 999, marginLeft: 5, fontWeight: 500,
+  intelGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: 'var(--space-3)',
+    marginTop: 'var(--space-2)',
   },
+  intelCardPrimary: {
+    background: 'var(--bg-2)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-3) var(--space-4)',
+  },
+  intelCardSecondary: {
+    background: 'var(--bg-2)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-3)',
+  },
+  intelLblPrimary: {
+    fontSize: 'var(--text-xs)',
+    color: 'var(--text-2)',
+    marginBottom: 'var(--space-2)',
+    fontWeight: 600,
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--space-2)',
+  },
+  intelLblSecondary: {
+    fontSize: 'var(--text-xs)',
+    color: 'var(--text-3)',
+    marginBottom: 'var(--space-2)',
+    fontWeight: 600,
+    letterSpacing: 'var(--track-tight)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--space-2)',
+  },
+  intelVal: { fontSize: 'var(--text-sm)', fontWeight: 600 },
 
   firstMove: {
-    background: 'var(--bg-2)', borderRadius: 'var(--radius)', padding: '12px 14px',
-    fontSize: 13, lineHeight: 1.65,
+    background: 'var(--bg-2)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-3) var(--space-4)',
+    fontSize: 'var(--text-sm)',
+    lineHeight: 1.65,
   },
   angleBox: {
-    background: 'rgba(255,149,0,0.06)', borderLeft: '3px solid var(--amber)',
-    borderRadius: 'var(--radius)', padding: '10px 14px', fontSize: 14,
-    color: 'var(--text)', fontWeight: 500, marginBottom: 6,
+    background: 'var(--surface-amber-bg)',
+    borderLeft: '3px solid var(--amber)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-3) var(--space-4)',
+    fontSize: 'var(--text-base)',
+    color: 'var(--text)',
+    fontWeight: 500,
+    marginBottom: 'var(--space-2)',
   },
   dontBox: {
-    background: 'rgba(255,149,0,0.08)', border: '1px solid rgba(255,149,0,0.25)',
-    borderRadius: 'var(--radius)', padding: '9px 12px', fontSize: 12,
-    color: '#8a5a00', marginTop: 6, lineHeight: 1.55,
-  },
-  pill: {
-    display: 'inline-block', fontSize: 11, padding: '2px 8px',
-    borderRadius: 999, marginLeft: 7, fontWeight: 500,
-  },
-  emptyState: {
-    fontSize: 12, color: 'var(--text-2)', fontStyle: 'italic',
-    padding: '6px 0',
+    background: 'var(--surface-amber-bg-strong)',
+    border: '1px solid var(--surface-amber-border)',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-2) var(--space-3)',
+    fontSize: 'var(--text-xs)',
+    color: 'var(--surface-amber-text)',
+    marginTop: 'var(--space-2)',
+    lineHeight: 1.55,
   },
 }
 
@@ -123,7 +210,7 @@ const DIM_INFO = {
   reliability: {
     name: 'Reliability',
     color: 'var(--purple)',
-    description: 'Our overall confidence in this deal’s forecast category. Combines the three scores above, with extra penalties for critical contradictions.',
+    description: 'Overall confidence in this deal’s forecast category. Combines the three scores above, with extra penalties for critical contradictions.',
   },
 }
 
@@ -143,9 +230,7 @@ function cleanFieldName(label) {
 function explainCompleteness(pct, allGaps) {
   const completenessGaps = (allGaps || []).filter(g => g.source === 'completeness')
   const critical = completenessGaps.filter(g => g.severity === 'critical')
-  if (pct >= 0.85) {
-    return 'Most CRM fields are filled in. Only minor fields are missing.'
-  }
+  if (pct >= 0.85) return 'Most CRM fields are filled in. Only minor fields are missing.'
   if (critical.length === 0 && completenessGaps.length === 0) {
     return 'Some fields are missing but none are flagged critical for this stage.'
   }
@@ -160,33 +245,28 @@ function explainCompleteness(pct, allGaps) {
 }
 
 function explainFreshness(pct, flagsDetail) {
-  if (pct >= 0.85) {
-    return 'Activity cadence matches what is expected for this deal stage.'
-  }
+  if (pct >= 0.85) return 'Activity cadence matches what is expected for this deal stage.'
   if (!flagsDetail || flagsDetail.length === 0) {
     return 'Activity is below the expected cadence for this stage, but no specific flags were logged.'
   }
-  const lines = flagsDetail.slice(0, 4).map(f => f.label)
-  return lines.join(' · ')
+  return flagsDetail.slice(0, 4).map(f => f.label).join(' · ')
 }
 
 function explainConsistency(pct, allContras) {
-  if (pct >= 0.9) {
-    return 'All fields agree with each other. No contradictions found.'
-  }
+  if (pct >= 0.9) return 'All fields agree with each other. No contradictions found.'
   if (!allContras || allContras.length === 0) {
     return 'Some minor inconsistencies were detected, but none are flagged critical.'
   }
   const critical = allContras.filter(c => c.severity === 'critical')
   if (critical.length === 0) {
-    return `${allContras.length} minor inconsistencies in the data — none currently flagged critical.`
+    return `${allContras.length} minor inconsistencies in the data, none currently flagged critical.`
   }
-  return `${allContras.length} contradiction${allContras.length > 1 ? 's' : ''} found (${critical.length} critical). See the contradictions list below for details.`
+  return `${allContras.length} contradiction${allContras.length > 1 ? 's' : ''} found (${critical.length} critical). See the contradictions list below.`
 }
 
 function explainReliability(tag, pct, hasCritContra) {
   if (tag === 'reliable') {
-    return 'All signals support this deal’s forecast category. This is a trustworthy deal — safe to include in committed pipeline.'
+    return 'All signals support this deal’s forecast category. This is a trustworthy deal, safe to include in committed pipeline.'
   }
   if (tag === 'questionable') {
     return 'Some signals do not match the forecast category. Verify the key fields and address the gaps before committing this deal to the quarter.'
@@ -195,17 +275,12 @@ function explainReliability(tag, pct, hasCritContra) {
   return `Multiple signals contradict the current forecast. Do not rely on this deal closing in the committed quarter without first resolving the issues below.${extra}`
 }
 
-function ConfBadge({ conf }) {
-  const { label, bg, text } = confBadge(conf)
-  return <span style={{ ...s.confBadge, background: bg, color: text }}>{label}</span>
-}
-
 function DimBar({ label, value, color }) {
   return (
-    <div style={s.barItem}>
+    <div>
       <div style={s.barLbl}>{label}</div>
       <div style={s.barBg}>
-        <div style={{ ...s.barFill, width: fmtPct(value), background: color }} />
+        <div style={{ ...s.barFill, width: fmtPct(value), background: color, opacity: 0.9 }} />
       </div>
       <div style={s.barVal}>{fmtPct(value)}</div>
     </div>
@@ -214,14 +289,21 @@ function DimBar({ label, value, color }) {
 
 function ScoreCard({ dimKey, score, why }) {
   const info = DIM_INFO[dimKey]
+  const isWeak = score < 0.5
   return (
-    <div style={s.scoreCard}>
+    <div
+      style={{
+        ...s.scoreCard,
+        ...(isWeak ? { boxShadow: `inset 3px 0 0 ${info.color}` } : {}),
+      }}
+    >
       <div style={s.scoreCardHead}>
         <span style={s.scoreCardName}>{info.name}</span>
         <span style={{ ...s.scoreCardPct, color: info.color }}>{fmtPct(score)}</span>
       </div>
       <div style={s.scoreCardDesc}>{info.description}</div>
-      <div style={s.scoreCardWhy}><strong style={{ fontWeight: 600 }}>Why this score:</strong> {why}</div>
+      <div style={s.scoreCardWhyLabel}>Why this score</div>
+      <div style={s.scoreCardWhy}>{why}</div>
     </div>
   )
 }
@@ -241,17 +323,15 @@ export default function AccountDetail({ account }) {
   const hasFunding = intelligence.timing?.funding_detected
   const hasLeadershipChange = intelligence.timing?.leadership_change
 
-  const allGaps     = gaps.all_gaps || []
-  const allContras  = gaps.all_contradictions || []
-  const freshFlags  = gaps.freshness_flags_detail || []
+  const allGaps    = gaps.all_gaps || []
+  const allContras = gaps.all_contradictions || []
+  const freshFlags = gaps.freshness_flags_detail || []
 
-  // Critical gaps (anything severity=critical that isn't a contradiction)
   const criticalGaps = allGaps.filter(g => g.severity === 'critical' && g.source !== 'consistency')
-  // Fall back to top_critical_gaps if all_gaps wasn't enriched for some reason
-  const gapsToShow = criticalGaps.length > 0 ? criticalGaps : (gaps.top_critical_gaps || [])
+  const gapsToShow   = criticalGaps.length > 0 ? criticalGaps : (gaps.top_critical_gaps || [])
 
   const contradictions = allContras.length > 0 ? allContras : (gaps.top_contradictions || [])
-  const critContras = contradictions.filter(c => c.severity === 'critical')
+  const critContras    = contradictions.filter(c => c.severity === 'critical')
 
   return (
     <div style={s.panel}>
@@ -261,14 +341,16 @@ export default function AccountDetail({ account }) {
         <div>
           <div style={s.title}>{account.company_name}</div>
           <div style={s.meta}>
-            {account.rep_name} · {account.segment} · {account.current_stage} · {account.forecast_category}
-            {hasFunding && <span style={{ ...s.pill, background: '#fff4d6', color: '#8a5a00' }}>Funding</span>}
-            {hasLeadershipChange && <span style={{ ...s.pill, background: '#e4e4ff', color: '#3730a3' }}>Leadership change</span>}
+            <span>{account.rep_name} · {account.segment} · {account.current_stage} · {account.forecast_category}</span>
+            {hasFunding && <Chip variant="amber" title="Funding event detected">Funding</Chip>}
+            {hasLeadershipChange && <Chip variant="blue" title="Recent leadership change at this account">Leadership change</Chip>}
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.02em' }}>{fmtACV(account.acv_usd)}</div>
-          <div style={{ marginTop: 6 }}>
+          <div style={{ fontSize: 'var(--text-xl)', fontWeight: 600, letterSpacing: 'var(--track-display)' }}>
+            {fmtACV(account.acv_usd)}
+          </div>
+          <div style={{ marginTop: 'var(--space-2)' }}>
             <span style={{ ...s.badge, background: hc }}>{health.label}</span>
             <span style={{ ...s.badge, background: rc }}>{health.reliability_tag}</span>
           </div>
@@ -276,9 +358,9 @@ export default function AccountDetail({ account }) {
       </div>
 
       {/* Pre-call angle */}
-      <div style={s.sectionLabel}>
-        Pre-call angle <ConfBadge conf={action.angle_confidence} />
-      </div>
+      <SectionLabel style={{ marginTop: 'var(--space-4)' }}>
+        Pre-call angle <ConfDot conf={action.angle_confidence} inline />
+      </SectionLabel>
       <div style={s.angleBox}>{action.top_angle}</div>
       {action.what_not_to_do && (
         <div style={s.dontBox}>
@@ -287,7 +369,7 @@ export default function AccountDetail({ account }) {
       )}
 
       {/* First move */}
-      <div style={s.sectionLabel}>First move — do this today</div>
+      <SectionLabel style={{ marginTop: 'var(--space-4)' }}>First move, do this today</SectionLabel>
       <div style={s.firstMove}>
         {formatFirstMove(action.first_move || action.first_move_preview)}
       </div>
@@ -295,20 +377,20 @@ export default function AccountDetail({ account }) {
       <div style={s.divider} />
 
       {/* Score overview */}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: 18, marginBottom: 8 }}>
-        <span style={{ fontSize: 26, fontWeight: 600, letterSpacing: '-0.025em' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--space-4)', marginBottom: 'var(--space-2)', flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 'var(--text-2xl)', fontWeight: 600, letterSpacing: 'var(--track-display)', lineHeight: 1 }}>
           {health.overall_score}
-          <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
+          <span style={{ fontSize: 'var(--text-sm)', fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
         </span>
-        <span style={{ fontSize: 13, color: 'var(--text-2)' }}>overall health</span>
-        <span style={{ fontSize: 18, fontWeight: 600, marginLeft: 10, letterSpacing: '-0.02em' }}>
+        <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-2)' }}>overall health</span>
+        <span style={{ fontSize: 'var(--text-lg)', fontWeight: 600, marginLeft: 'var(--space-3)', letterSpacing: 'var(--track-tight)' }}>
           {intelligence.readiness_score}
-          <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
+          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 400, color: 'var(--text-2)' }}>/100</span>
         </span>
-        <span style={{ fontSize: 13, color: 'var(--text-2)' }}>intel ready</span>
+        <span style={{ fontSize: 'var(--text-sm)', color: 'var(--text-2)' }}>intel ready</span>
       </div>
 
-      {/* Dimension bars at-a-glance */}
+      {/* At-a-glance dimension bars */}
       <div style={s.scoreBars}>
         <DimBar label="Completeness" value={health.completeness} color="var(--blue)" />
         <DimBar label="Freshness"    value={health.freshness}    color="var(--green)" />
@@ -316,55 +398,39 @@ export default function AccountDetail({ account }) {
         <DimBar label="Reliability"  value={health.reliability}  color={rc} />
       </div>
 
-      {/* Score breakdown — plain-language justification for each dimension */}
-      <div style={s.sectionLabel}>Score breakdown — why these grades</div>
-      <ScoreCard
-        dimKey="completeness"
-        score={health.completeness}
-        why={explainCompleteness(health.completeness, allGaps)}
-      />
-      <ScoreCard
-        dimKey="freshness"
-        score={health.freshness}
-        why={explainFreshness(health.freshness, freshFlags)}
-      />
-      <ScoreCard
-        dimKey="consistency"
-        score={health.consistency}
-        why={explainConsistency(health.consistency, allContras)}
-      />
-      <ScoreCard
-        dimKey="reliability"
-        score={health.reliability}
-        why={explainReliability(health.reliability_tag, health.reliability, critContras.length > 0)}
-      />
+      {/* Score breakdown */}
+      <SectionLabel style={{ marginTop: 'var(--space-4)' }}>Score breakdown, why these grades</SectionLabel>
+      <ScoreCard dimKey="completeness" score={health.completeness} why={explainCompleteness(health.completeness, allGaps)} />
+      <ScoreCard dimKey="freshness"    score={health.freshness}    why={explainFreshness(health.freshness, freshFlags)} />
+      <ScoreCard dimKey="consistency"  score={health.consistency}  why={explainConsistency(health.consistency, allContras)} />
+      <ScoreCard dimKey="reliability"  score={health.reliability}  why={explainReliability(health.reliability_tag, health.reliability, critContras.length > 0)} />
 
-      {/* All critical gaps */}
-      <div style={s.sectionLabel}>
+      {/* Critical gaps */}
+      <SectionLabel style={{ marginTop: 'var(--space-4)' }}>
         Critical gaps {gapsToShow.length > 0 && `(${gapsToShow.length})`}
-      </div>
+      </SectionLabel>
       {gapsToShow.length === 0 ? (
-        <div style={s.emptyState}>No critical gaps. CRM fields appropriate for this deal stage are filled in.</div>
+        <EmptyState>No critical gaps. CRM fields appropriate for this deal stage are filled in.</EmptyState>
       ) : (
         gapsToShow.map((g, i) => (
-          <div key={i} style={{ ...s.gapItem, borderLeftColor: 'var(--red)' }}>
+          <div key={i} style={s.gapItem}>
             <div style={s.gapLabel}>{g.label}</div>
             {g.context && <div style={s.gapContext}>{g.context}</div>}
           </div>
         ))
       )}
 
-      {/* All contradictions */}
-      <div style={s.sectionLabel}>
+      {/* Contradictions */}
+      <SectionLabel style={{ marginTop: 'var(--space-4)' }}>
         Contradictions {contradictions.length > 0 && `(${contradictions.length})`}
-      </div>
+      </SectionLabel>
       {contradictions.length === 0 ? (
-        <div style={s.emptyState}>No contradictions found. The data in this record agrees with itself.</div>
+        <EmptyState>No contradictions found. The data in this record agrees with itself.</EmptyState>
       ) : (
         contradictions.map((c, i) => (
           <div key={i} style={s.contradictionItem}>
             <div style={s.gapLabel}>{c.label}</div>
-            {c.detail && <div style={s.contradictionDetail}>{c.detail}</div>}
+            {c.detail && <div style={s.gapContext}>{c.detail}</div>}
           </div>
         ))
       )}
@@ -372,9 +438,9 @@ export default function AccountDetail({ account }) {
       {/* Freshness flags */}
       {freshFlags.length > 0 && (
         <>
-          <div style={s.sectionLabel}>
+          <SectionLabel style={{ marginTop: 'var(--space-4)' }}>
             Freshness flags ({freshFlags.length})
-          </div>
+          </SectionLabel>
           {freshFlags.map((f, i) => (
             <div key={i} style={s.freshItem}>
               <div style={s.gapLabel}>{f.label}</div>
@@ -383,56 +449,66 @@ export default function AccountDetail({ account }) {
         </>
       )}
 
-      {/* Intelligence synthesis */}
-      <div style={s.sectionLabel}>Intelligence synthesis</div>
+      {/* Intelligence synthesis — Champion + Exec primary, Use case + Competitive secondary */}
+      <SectionLabel style={{ marginTop: 'var(--space-4)' }}>Intelligence synthesis</SectionLabel>
       <div style={s.intelGrid}>
 
-        <div style={s.intelCard}>
-          <div style={s.intelLbl}>Champion <ConfBadge conf={intelligence.champion.confidence} /></div>
+        <div style={s.intelCardPrimary}>
+          <div style={s.intelLblPrimary}>
+            Champion <ConfDot conf={intelligence.champion.confidence} />
+          </div>
           <div style={s.intelVal}>{intelligence.champion.has_crm_data ? 'Logged' : 'Not logged'}</div>
           {intelligence.champion.candidates?.slice(0, 1).map((c, i) => (
-            <div key={i} style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 4 }}>
-              {c.inferred_name} — {c.title}
-              <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 1 }}>{c.signal_source}</div>
+            <div key={i} style={{ fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginTop: 'var(--space-1)' }}>
+              {c.inferred_name} · {c.title}
+              <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-3)', marginTop: 1 }}>{c.signal_source}</div>
             </div>
           ))}
         </div>
 
-        <div style={s.intelCard}>
-          <div style={s.intelLbl}>Exec engagement</div>
+        <div style={s.intelCardPrimary}>
+          <div style={s.intelLblPrimary}>Exec engagement</div>
           <div style={{ ...s.intelVal, color: intelligence.economic_buyer.exec_engaged ? 'var(--green)' : 'var(--red)' }}>
-            {intelligence.economic_buyer.exec_engaged ? '✓ Engaged' : '✗ Not engaged'}
-            <span style={{ fontSize: 12, fontWeight: 400, color: 'var(--text-2)' }}> · {intelligence.economic_buyer.meetings} meetings</span>
+            {intelligence.economic_buyer.exec_engaged ? 'Engaged' : 'Not engaged'}
+            <span style={{ fontSize: 'var(--text-xs)', fontWeight: 400, color: 'var(--text-2)' }}>
+              {' · '}{intelligence.economic_buyer.meetings} meetings
+            </span>
           </div>
           {intelligence.economic_buyer.inferred_execs?.slice(0, 1).map((e, i) => (
-            <div key={i} style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 4 }}>
-              {e.inferred_name} — {e.title}
+            <div key={i} style={{ fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginTop: 'var(--space-1)' }}>
+              {e.inferred_name} · {e.title}
             </div>
           ))}
         </div>
 
-        <div style={s.intelCard}>
-          <div style={s.intelLbl}>Competitive <ConfBadge conf={intelligence.competitive.confidence} /></div>
-          <div style={s.intelVal}>
+      </div>
+
+      <div style={{ ...s.intelGrid, marginTop: 'var(--space-2)' }}>
+
+        <div style={s.intelCardSecondary}>
+          <div style={s.intelLblSecondary}>
+            Competitive <ConfDot conf={intelligence.competitive.confidence} />
+          </div>
+          <div style={{ fontSize: 'var(--text-sm)', fontWeight: 500 }}>
             {intelligence.competitive.has_crm_data ? 'Logged' : 'Not logged'}
             {intelligence.competitive.pricing_pressure && (
-              <span style={{ color: 'var(--amber)', fontSize: 12, fontWeight: 400 }}> · pricing pressure</span>
+              <span style={{ color: 'var(--amber)', fontSize: 'var(--text-xs)', fontWeight: 400 }}> · pricing pressure</span>
             )}
           </div>
           {intelligence.competitive.signals?.slice(0, 1).map((sig, i) => (
-            <div key={i} style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 4 }}>
-              {sig.competitor} <ConfBadge conf={sig.confidence} />
+            <div key={i} style={{ fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginTop: 'var(--space-1)' }}>
+              {sig.competitor} <ConfDot conf={sig.confidence} inline />
             </div>
           ))}
         </div>
 
-        <div style={s.intelCard}>
-          <div style={s.intelLbl}>Use case</div>
-          <div style={{ fontSize: 12, lineHeight: 1.5, color: intelligence.use_case.has_crm_data ? 'var(--text)' : 'var(--text-2)' }}>
+        <div style={s.intelCardSecondary}>
+          <div style={s.intelLblSecondary}>Use case</div>
+          <div style={{ fontSize: 'var(--text-xs)', lineHeight: 1.5, color: intelligence.use_case.has_crm_data ? 'var(--text)' : 'var(--text-2)' }}>
             {intelligence.use_case.inferred || '—'}
           </div>
           {(intelligence.use_case.tech_stack || []).length > 0 && (
-            <div style={{ fontSize: 11, color: 'var(--text-3)', marginTop: 4 }}>
+            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-3)', marginTop: 'var(--space-1)' }}>
               {intelligence.use_case.tech_stack.slice(0, 3).join(' + ')}
             </div>
           )}
@@ -443,15 +519,15 @@ export default function AccountDetail({ account }) {
       {/* Timing signals */}
       {(intelligence.timing?.urgency_signals || []).length > 0 && (
         <>
-          <div style={s.sectionLabel}>Timing signals</div>
+          <SectionLabel style={{ marginTop: 'var(--space-4)' }}>Timing signals</SectionLabel>
           {intelligence.timing.urgency_signals.map((sig, i) => (
-            <div key={i} style={{ ...s.freshItem }}>
+            <div key={i} style={s.freshItem}>
               <div style={s.gapLabel}>{sig}</div>
             </div>
           ))}
           {intelligence.timing.recent_news?.slice(0, 1).map((n, i) => (
-            <div key={i} style={{ fontSize: 12, color: 'var(--text-2)', marginTop: 5 }}>
-              {n.headline} — <em>{n.source}</em>
+            <div key={i} style={{ fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginTop: 'var(--space-2)' }}>
+              {n.headline} <em>· {n.source}</em>
             </div>
           ))}
         </>

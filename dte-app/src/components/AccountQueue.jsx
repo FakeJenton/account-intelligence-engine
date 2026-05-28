@@ -1,79 +1,130 @@
 import { useState, useMemo, useEffect } from 'react'
 import AccountDetail from './AccountDetail'
 import { fmtACV, HEALTH_COLORS, SEGMENT_COLORS } from '../utils'
+import { SectionLabel, StatCard, Chip } from './ui'
 
 const s = {
-  statsStrip: { display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 10, marginBottom: 18 },
-  stat: {
-    background: 'var(--bg)', borderRadius: 'var(--radius-lg)', padding: '14px 16px',
-    boxShadow: 'var(--shadow-sm)',
+  statsStrip: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(5,1fr)',
+    gap: 'var(--space-3)',
+    marginBottom: 'var(--space-5)',
   },
-  statLbl: { fontSize: 11, color: 'var(--text-2)', marginBottom: 6, letterSpacing: '-0.005em' },
-  statVal: { fontSize: 20, fontWeight: 600, letterSpacing: '-0.02em' },
-
-  searchWrap: { position: 'relative', flex: 1, minWidth: 200 },
+  searchWrap: { position: 'relative', flex: 1, minWidth: 240 },
   searchInput: {
-    width: '100%', padding: '8px 30px 8px 12px', fontSize: 13,
-    border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-    background: 'var(--bg)', color: 'var(--text)', outline: 'none',
-    boxSizing: 'border-box', boxShadow: 'var(--shadow-sm)',
+    width: '100%',
+    padding: '8px 32px 8px var(--space-3)',
+    fontSize: 'var(--text-sm)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius)',
+    background: 'var(--bg)',
+    color: 'var(--text)',
+    outline: 'none',
+    boxSizing: 'border-box',
+    boxShadow: 'var(--shadow-sm)',
   },
   clearBtn: {
-    position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
-    background: 'none', border: 'none', color: 'var(--text-3)',
-    fontSize: 16, padding: 0, cursor: 'pointer', lineHeight: 1,
+    position: 'absolute',
+    right: 10,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    background: 'none',
+    border: 'none',
+    color: 'var(--text-3)',
+    fontSize: 16,
+    padding: 0,
+    cursor: 'pointer',
+    lineHeight: 1,
   },
-
   filterBtn: {
-    fontSize: 12, padding: '6px 12px', borderRadius: 999,
-    border: '1px solid var(--border)', background: 'var(--bg)',
-    color: 'var(--text-2)', cursor: 'pointer', boxShadow: 'var(--shadow-sm)',
-    letterSpacing: '-0.005em',
+    fontSize: 'var(--text-xs)',
+    padding: '6px var(--space-3)',
+    borderRadius: 999,
+    border: '1px solid var(--border)',
+    background: 'var(--bg)',
+    color: 'var(--text-2)',
+    cursor: 'pointer',
+    boxShadow: 'var(--shadow-sm)',
+    fontWeight: 500,
   },
-
   select: {
-    fontSize: 12, padding: '6px 28px 6px 12px', borderRadius: 'var(--radius)',
-    border: '1px solid var(--border)', background: 'var(--bg)',
-    color: 'var(--text)', cursor: 'pointer', outline: 'none',
+    fontSize: 'var(--text-xs)',
+    padding: '6px 28px 6px var(--space-3)',
+    borderRadius: 'var(--radius)',
+    border: '1px solid var(--border)',
+    background: 'var(--bg)',
+    color: 'var(--text)',
+    cursor: 'pointer',
+    outline: 'none',
     boxShadow: 'var(--shadow-sm)',
   },
-
   activeTag: {
-    display: 'inline-flex', alignItems: 'center', gap: 6,
-    fontSize: 11, padding: '4px 4px 4px 10px', borderRadius: 999,
-    background: 'var(--bg)', border: '1px solid var(--border-2)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 'var(--space-2)',
+    fontSize: 'var(--text-xs)',
+    padding: '4px 4px 4px var(--space-3)',
+    borderRadius: 999,
+    background: 'var(--bg)',
+    border: '1px solid var(--border-2)',
     color: 'var(--text-2)',
   },
   tagX: {
-    background: 'var(--bg-2)', border: 'none', cursor: 'pointer',
-    color: 'var(--text-2)', fontSize: 12, padding: 0,
-    width: 18, height: 18, borderRadius: 999, lineHeight: 1,
-    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+    background: 'var(--bg-2)',
+    border: 'none',
+    cursor: 'pointer',
+    color: 'var(--text-2)',
+    fontSize: 12,
+    padding: 0,
+    width: 18,
+    height: 18,
+    borderRadius: 999,
+    lineHeight: 1,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  queue: { display: 'flex', flexDirection: 'column', gap: 6 },
+  queue: { display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' },
   row: {
     background: 'var(--bg)',
-    borderRadius: 'var(--radius)', padding: '12px 14px 12px 13px',
+    borderRadius: 'var(--radius)',
+    padding: 'var(--space-3) var(--space-4) var(--space-3) 13px',
     cursor: 'pointer',
-    display: 'grid', gridTemplateColumns: '1fr auto auto auto',
-    gap: 14, alignItems: 'center',
+    display: 'grid',
+    gridTemplateColumns: '1fr auto auto auto',
+    gap: 'var(--space-4)',
+    alignItems: 'center',
     boxShadow: 'var(--shadow-sm)',
     transition: 'box-shadow 0.15s, transform 0.15s',
   },
-  company: { fontSize: 13, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', letterSpacing: '-0.01em' },
-  rep: { fontSize: 11, color: 'var(--text-2)', marginTop: 2 },
-  segPill: {
-    fontSize: 10, padding: '3px 8px', borderRadius: 999,
-    border: '1px solid var(--border)', color: 'var(--text-2)', whiteSpace: 'nowrap',
-    fontWeight: 500, letterSpacing: '0.01em',
+  company: {
+    fontSize: 'var(--text-sm)',
+    fontWeight: 600,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    letterSpacing: 'var(--track-tight)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: 'var(--space-2)',
   },
-  acv: { fontSize: 13, fontWeight: 600, textAlign: 'right', whiteSpace: 'nowrap', letterSpacing: '-0.01em' },
-  stage: { fontSize: 11, color: 'var(--text-2)', textAlign: 'right', whiteSpace: 'nowrap', marginTop: 2 },
+  rep: { fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginTop: 2 },
+  segPill: {
+    fontSize: 'var(--text-xs)',
+    padding: '3px var(--space-2)',
+    borderRadius: 999,
+    border: '1px solid var(--border)',
+    color: 'var(--text-2)',
+    whiteSpace: 'nowrap',
+    fontWeight: 500,
+  },
+  acv: { fontSize: 'var(--text-sm)', fontWeight: 600, textAlign: 'right', whiteSpace: 'nowrap', letterSpacing: 'var(--track-tight)' },
+  stage: { fontSize: 'var(--text-xs)', color: 'var(--text-2)', textAlign: 'right', whiteSpace: 'nowrap', marginTop: 2 },
 }
 
 const FILTERS = [
-  { key: 'all',             label: 'All',             activeColor: '#1d1d1f' },
+  { key: 'all',             label: 'All',             activeColor: 'var(--text)' },
   { key: 'critical',        label: 'Critical',        activeColor: 'var(--red)' },
   { key: 'at-risk',         label: 'At Risk',         activeColor: 'var(--amber)' },
   { key: 'needs-attention', label: 'Needs Attention', activeColor: 'var(--blue)' },
@@ -194,43 +245,25 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
       <div style={s.statsStrip}>
         {isFiltered ? (
           <>
-            <div style={s.stat}>
-              <div style={s.statLbl}>Showing</div>
-              <div style={s.statVal}>
-                {filtered.length}
-                <span style={{ fontSize: 13, fontWeight: 400, color: 'var(--text-2)' }}> / {accounts.length}</span>
-              </div>
-            </div>
-            <div style={s.stat}>
-              <div style={s.statLbl}>ACV in view</div>
-              <div style={{ ...s.statVal, color: 'var(--blue)' }}>{fmtACV(filteredStats.totalACV)}</div>
-            </div>
-            <div style={s.stat}>
-              <div style={s.statLbl}>Critical / at-risk</div>
-              <div style={{ ...s.statVal, color: 'var(--amber)' }}>{filteredStats.atRisk}</div>
-            </div>
-            <div style={s.stat}>
-              <div style={s.statLbl}>Unreliable forecasts</div>
-              <div style={{ ...s.statVal, color: 'var(--red)' }}>{filteredStats.unreliable}</div>
-            </div>
-            <div style={s.stat}>
-              <div style={s.statLbl}>Avg health</div>
-              <div style={{ ...s.statVal, color: 'var(--blue)' }}>{filteredStats.avgHealth}/100</div>
-            </div>
+            <StatCard label="Showing" value={<>{filtered.length}<span style={{ fontSize: 'var(--text-sm)', fontWeight: 400, color: 'var(--text-2)' }}> / {accounts.length}</span></>} />
+            <StatCard label="ACV in view" value={fmtACV(filteredStats.totalACV)} color="var(--blue)" />
+            <StatCard label="Critical / at-risk" value={filteredStats.atRisk} color="var(--amber)" />
+            <StatCard label="Unreliable forecasts" value={filteredStats.unreliable} color="var(--red)" />
+            <StatCard label="Avg health" value={`${filteredStats.avgHealth}/100`} color="var(--blue)" />
           </>
         ) : (
           <>
-            <div style={s.stat}><div style={s.statLbl}>Total ACV</div><div style={s.statVal}>{fmtACV(es.total_acv)}</div></div>
-            <div style={s.stat}><div style={s.statLbl}>ACV at risk</div><div style={{ ...s.statVal, color: 'var(--red)' }}>{fmtACV(es.acv_at_risk)}</div></div>
-            <div style={s.stat}><div style={s.statLbl}>Critical / at-risk</div><div style={{ ...s.statVal, color: 'var(--amber)' }}>{(es.health_distribution?.critical || 0) + (es.health_distribution?.['at-risk'] || 0)}</div></div>
-            <div style={s.stat}><div style={s.statLbl}>Unreliable commits</div><div style={{ ...s.statVal, color: 'var(--red)' }}>{es.unreliable_commit_count}</div></div>
-            <div style={s.stat}><div style={s.statLbl}>Avg intel readiness</div><div style={{ ...s.statVal, color: 'var(--blue)' }}>{es.avg_intelligence_readiness}/100</div></div>
+            <StatCard label="Total ACV" value={fmtACV(es.total_acv)} />
+            <StatCard label="ACV at risk" value={fmtACV(es.acv_at_risk)} color="var(--red)" />
+            <StatCard label="Critical / at-risk" value={(es.health_distribution?.critical || 0) + (es.health_distribution?.['at-risk'] || 0)} color="var(--amber)" />
+            <StatCard label="Unreliable commits" value={es.unreliable_commit_count} color="var(--red)" />
+            <StatCard label="Avg intel readiness" value={`${es.avg_intelligence_readiness}/100`} color="var(--blue)" />
           </>
         )}
       </div>
 
       {/* Row 1: search + sort */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-2)', alignItems: 'center' }}>
         <div style={s.searchWrap}>
           <input
             style={s.searchInput}
@@ -239,7 +272,7 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
             onChange={e => { setSearch(e.target.value); setSelectedId(null) }}
           />
           {search && (
-            <button style={s.clearBtn} onClick={() => setSearch('')}>×</button>
+            <button style={s.clearBtn} onClick={() => setSearch('')} aria-label="Clear search">×</button>
           )}
         </div>
         <select style={s.select} value={sortBy} onChange={e => setSortBy(e.target.value)}>
@@ -248,7 +281,7 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
       </div>
 
       {/* Row 2: health pills + dropdowns */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: navTags.length ? 8 : 14, flexWrap: 'wrap', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: navTags.length ? 'var(--space-2)' : 'var(--space-4)', flexWrap: 'wrap', alignItems: 'center' }}>
         {FILTERS.map(f => {
           const active = filter === f.key
           return (
@@ -280,7 +313,7 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
 
       {/* Row 3: nav tags + clear */}
       {(navTags.length > 0 || isFiltered) && (
-        <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)', flexWrap: 'wrap', alignItems: 'center' }}>
           {navTags.map((tag, i) => (
             <span key={i} style={s.activeTag}>
               {tag.label}
@@ -288,22 +321,22 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
             </span>
           ))}
           {isFiltered && (
-            <button style={{ ...s.filterBtn, color: 'var(--text-3)', fontSize: 11 }} onClick={clearFilters}>
+            <button style={{ ...s.filterBtn, color: 'var(--text-3)', fontSize: 'var(--text-xs)' }} onClick={clearFilters}>
               Clear all
             </button>
           )}
         </div>
       )}
 
-      <div style={{ fontSize: 12, color: 'var(--text-2)', marginBottom: 10 }}>
+      <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-2)', marginBottom: 'var(--space-3)' }}>
         {filtered.length} account{filtered.length !== 1 ? 's' : ''}
         {isFiltered ? ' match filters' : ''}
       </div>
 
-      {/* Queue rows — show all filtered, no pagination */}
+      {/* Queue rows */}
       <div style={s.queue}>
         {filtered.length === 0 && (
-          <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
+          <div style={{ textAlign: 'center', padding: 'var(--space-8)', color: 'var(--text-2)', background: 'var(--bg)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' }}>
             No accounts match the active filters.
           </div>
         )}
@@ -313,34 +346,39 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
           const hasFunding = a.intelligence?.timing?.funding_detected
           const hasCont    = a.gaps?.critical_contradictions > 0
           const isStale    = a.health.freshness < 0.4
+          const flagCount  = (hasFunding ? 1 : 0) + (hasCont ? 1 : 0) + (isStale ? 1 : 0)
 
           return (
             <div key={a.account_id}>
               <div
+                className="card-interactive"
                 style={{
                   ...s.row,
                   borderLeft: `3px solid ${hc}`,
-                  ...(isSel ? { boxShadow: 'var(--shadow-md)' } : {}),
+                  ...(isSel ? { boxShadow: `0 0 0 2px ${hc}33, var(--shadow-md)` } : {}),
                 }}
                 onClick={() => toggleRow(a.account_id)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleRow(a.account_id) } }}
               >
                 <div style={{ minWidth: 0 }}>
                   <div style={s.company}>
-                    {a.company_name}
-                    {hasFunding && (
-                      <span title="Funding event detected" style={{ fontSize: 10, marginLeft: 7, color: '#a16500', background: '#fff8e1', padding: '2px 7px', borderRadius: 6, cursor: 'help', fontWeight: 500 }}>
-                        Funding
-                      </span>
-                    )}
-                    {hasCont && (
-                      <span title="Data contradictions detected — forecast reliability affected" style={{ fontSize: 10, marginLeft: 6, color: '#6b21a8', background: '#f3e8ff', padding: '2px 7px', borderRadius: 6, cursor: 'help', fontWeight: 500 }}>
-                        Contradiction
-                      </span>
-                    )}
-                    {isStale && (
-                      <span title="Low activity cadence for this deal stage" style={{ fontSize: 10, marginLeft: 6, color: '#a16500', background: '#fff8e1', padding: '2px 7px', borderRadius: 6, cursor: 'help', fontWeight: 500 }}>
-                        Stale
-                      </span>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{a.company_name}</span>
+                    {flagCount > 2 ? (
+                      <Chip variant="amber" title={[
+                        hasFunding && 'Funding event detected',
+                        hasCont && 'Data contradictions detected',
+                        isStale && 'Low activity cadence for this stage',
+                      ].filter(Boolean).join(' · ')}>
+                        {flagCount} flags
+                      </Chip>
+                    ) : (
+                      <>
+                        {hasFunding && <Chip variant="amber" title="Funding event detected">Funding</Chip>}
+                        {hasCont && <Chip variant="purple" title="Data contradictions detected — forecast reliability affected">Contradiction</Chip>}
+                        {isStale && <Chip variant="amber" title="Low activity cadence for this deal stage">Stale</Chip>}
+                      </>
                     )}
                   </div>
                   <div style={s.rep}>{a.rep_name}</div>
@@ -355,9 +393,16 @@ export default function AccountQueue({ data, navFilters, onNavConsumed }) {
                   <div style={s.stage}>{a.current_stage}</div>
                 </div>
 
-                <div style={{ fontSize: 14, fontWeight: 600, minWidth: 52, textAlign: 'right', color: hc, letterSpacing: '-0.02em' }}>
+                <div style={{
+                  fontSize: 'var(--text-base)',
+                  fontWeight: 600,
+                  minWidth: 56,
+                  textAlign: 'right',
+                  color: hc,
+                  letterSpacing: 'var(--track-display)',
+                }}>
                   {a.health.overall_score}
-                  <span style={{ fontSize: 11, fontWeight: 400, color: 'var(--text-3)' }}>/100</span>
+                  <span style={{ fontSize: 'var(--text-xs)', fontWeight: 400, color: 'var(--text-3)' }}>/100</span>
                 </div>
               </div>
 
