@@ -159,6 +159,14 @@ export function ArrowIcon({ size = 14, style }) {
   )
 }
 
+export function DownloadIcon({ size = 14, style }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 14 14" fill="none" style={style} aria-hidden="true">
+      <path d="M7 1.5v7M3.5 5.5L7 9l3.5-3.5M2.5 12h9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export function CheckIcon({ size = 14, style }) {
   return (
     <svg width={size} height={size} viewBox="0 0 14 14" fill="none" style={style} aria-hidden="true">
